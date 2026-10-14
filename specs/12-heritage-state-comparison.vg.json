@@ -1,7 +1,7 @@
 {
   "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
   "description":"One coordinated state-total and classification-count chart. Cross-state places count in each relevant state.",
-  "data":{"url":"./data/heritage-state-class.json"},
+  "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-state-class.json"},
   "spacing":24,
   "resolve":{"legend":{"color":"independent"}},
   "hconcat":[
@@ -31,7 +31,7 @@
       "layer":[
         {"mark":{"type":"rect","stroke":"white","strokeWidth":2},"encoding":{"color":{"field":"class_count","type":"quantitative","scale":{"domain":[0,15,30],"range":["#eff3ff","#b4c7db","#05204b"],"interpolate":"rgb"},"legend":null}}},
         {"mark":{"type":"text","fontSize":14,"fontWeight":600,"dy":{"expr":"datum.state_code == 'VIC' && datum.class_field == 'historic_places' ? -12 : 0"}},"encoding":{"text":{"field":"class_count"},"color":{"condition":{"test":"datum.class_count >= 21","value":"white"},"value":"#20303d"}}},
-        {"transform":[{"filter":"datum.state_code == 'VIC' && datum.class_field == 'historic_places'"},{"calculate":"'NSW'","as":"comparison_key"},{"lookup":"comparison_key","from":{"data":{"url":"./data/heritage-state-class.json"},"key":"state_code","fields":["historic_places"]},"as":["comparison_historic"]},{"calculate":"format(datum.class_count-datum.comparison_historic,'.0f') + ' more than NSW'","as":"comparison_note"}],"mark":{"type":"text","fontSize":12,"dy":14,"color":"white"},"encoding":{"text":{"field":"comparison_note"},"tooltip":null}}
+        {"transform":[{"filter":"datum.state_code == 'VIC' && datum.class_field == 'historic_places'"},{"calculate":"'NSW'","as":"comparison_key"},{"lookup":"comparison_key","from":{"data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-state-class.json"},"key":"state_code","fields":["historic_places"]},"as":["comparison_historic"]},{"calculate":"format(datum.class_count-datum.comparison_historic,'.0f') + ' more than NSW'","as":"comparison_note"}],"mark":{"type":"text","fontSize":12,"dy":14,"color":"white"},"encoding":{"text":{"field":"comparison_note"},"tooltip":null}}
       ]
     }
   ],

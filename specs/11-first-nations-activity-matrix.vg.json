@@ -2,7 +2,7 @@
   "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
   "description":"Overlapping activity shares among domestic and international First Nations trips, July 2023 to June 2024.",
   "width":"container","height":560,"autosize":{"type":"fit","contains":"padding"},"padding":8,
-  "data":{"url":"./data/first-nations-activities.json"},
+  "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/first-nations-activities.json"},
   "transform":[
     {"calculate":"datum.activity_id == 'site_community' ? 'Aboriginal site|or community visits' : datum.activity_id == 'art_craft_cultural_displays' ? 'Aboriginal art, craft|and cultural displays' : datum.activity_id == 'traditional_activities' ? 'Traditional activities' : datum.activity_id == 'guided_tour' ? 'Tours with an|Aboriginal guide' : datum.activity_id == 'performance' ? 'Aboriginal|performances' : datum.activity_id == 'food_experience' ? 'Aboriginal food|experiences' : 'Camping on|Aboriginal land'","as":"activity_display"},
     {"calculate":"datum.cohort == 'international' ? 'International' : 'Domestic day and overnight'","as":"cohort_display"},

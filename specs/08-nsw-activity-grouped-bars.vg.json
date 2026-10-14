@@ -2,7 +2,7 @@
   "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
   "description":"Four complete NSW culture and heritage activity pairs, calendar 2024. Suppressed festival pair excluded.",
   "width":"container","height":360,"autosize":{"type":"fit","contains":"padding"},"padding":{"left":8,"right":30,"top":10,"bottom":8},
-  "data":{"url":"./data/nsw-activities.json"},
+  "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/nsw-activities.json"},
   "transform":[
     {"filter":"datum.activity_label_source != 'Attend festivals / fairs or cultural events'"},
     {"calculate":"datum.activity_label_source == 'Visit museums or art galleries' ? 'Museums or|art galleries' : datum.activity_label_source == 'Go to markets' ? 'Markets' : datum.activity_label_source == 'Attend theatre, concerts or other performing arts' ? 'Theatre, concerts|or performing arts' : 'Heritage buildings,|sites or monuments'","as":"activity_display"},

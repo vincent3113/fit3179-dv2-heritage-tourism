@@ -2,7 +2,7 @@
   "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
   "description":"Reported overnight culture and heritage visitor stay-duration shares in New South Wales, calendar 2024.",
   "width":"container","height":374,"autosize":{"type":"fit","contains":"padding"},"padding":{"left":8,"right":30,"top":72,"bottom":8},
-  "data":{"url":"./data/nsw-overnight-trip-length.json"},
+  "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/nsw-overnight-trip-length.json"},
   "transform":[{"calculate":"format(datum.visitor_share_pct_reported,'.0f') + '%'","as":"share_label"}],
   "encoding":{
     "y":{"field":"category","type":"ordinal","sort":["1 night","2 nights","3 nights","4 to 7 nights","8 to 14 nights","15 or more nights"],"axis":{"title":null,"labelLimit":180,"minExtent":138}},

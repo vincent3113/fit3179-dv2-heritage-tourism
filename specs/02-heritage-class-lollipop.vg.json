@@ -3,7 +3,7 @@
   "description": "Distinct listed places by register classification in the eight selected states and territories, snapshot 4 October 2026. External territories are excluded.",
   "width": "container", "height": 190,
   "autosize": {"type":"fit","contains":"padding"}, "padding": {"left":8,"right":34,"top":20,"bottom":8},
-  "data": {"url":"./data/heritage-place-points.json"},
+  "data": {"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-place-points.json"},
   "transform":[{"aggregate":[{"op":"distinct","field":"place_id","as":"class_count"}],"groupby":["heritage_class"]},{"joinaggregate":[{"op":"sum","field":"class_count","as":"total_places"}]},{"calculate":"format(100 * datum.class_count / datum.total_places,'.1f') + '% of the places shown'","as":"share_note"}],
   "encoding":{
     "x":{"field":"class_count","type":"quantitative","scale":{"domain":[0,70],"zero":true},"axis":{"title":"Distinct listed places","values":[0,10,20,30,40,50,60,70]}},

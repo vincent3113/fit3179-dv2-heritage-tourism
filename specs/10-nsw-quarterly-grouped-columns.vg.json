@@ -2,7 +2,7 @@
   "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
   "description":"Quarterly shares of annual NSW culture and heritage visitor estimates, separate domestic overnight and day-trip groups, calendar 2024.",
   "width":"container","height":360,"autosize":{"type":"fit","contains":"padding"},"padding":{"left":8,"right":8,"top":16,"bottom":8},
-  "data":{"url":"./data/nsw-quarterly-visitation.json"},
+  "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/nsw-quarterly-visitation.json"},
   "transform":[
     {"calculate":"datum.quarter == 1 ? 'January|to March' : datum.quarter == 2 ? 'April|to June' : datum.quarter == 3 ? 'July|to September' : 'October|to December'","as":"quarter_display"},
     {"calculate":"format(datum.visitor_share_pct_reported,'.0f') + '%'","as":"share_label"},

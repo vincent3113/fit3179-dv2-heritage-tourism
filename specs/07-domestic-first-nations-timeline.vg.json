@@ -2,7 +2,7 @@
   "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
   "description":"Eleven reported annual domestic First Nations trip counts. No connector across the conservative survey comparability boundary.",
   "width":"container","height":390,"autosize":{"type":"fit","contains":"padding"},"padding":16,
-  "data":{"url":"./data/first-nations-annual.json"},
+  "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/first-nations-annual.json"},
   "transform":[
     {"calculate":"datum.period_end_year <= 2021 ? 'Earlier questions' : 'Expanded activity questions'","as":"survey_group"},
     {"calculate":"'July ' + (datum.period_end_year-1) + ' to June ' + datum.period_end_year","as":"period_full"}

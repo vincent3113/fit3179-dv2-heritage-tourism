@@ -14,7 +14,7 @@
   "layer": [
     {
       "data": {
-        "url": "./data/australia-states.topojson",
+        "url": "https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/australia-states.topojson",
         "format": {"type": "topojson", "feature": "states"}
       },
       "mark": {
@@ -28,7 +28,7 @@
       }
     },
     {
-      "data": {"url": "./data/state-label-points.csv", "format":{"type":"csv", "parse":{"longitude":"number", "latitude":"number"}}},
+      "data": {"url": "https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/state-label-points.csv", "format":{"type":"csv", "parse":{"longitude":"number", "latitude":"number"}}},
       "transform": [
         {"calculate":"datum.state_code == 'ACT' ? 156 : datum.state_code == 'NSW' ? 161 : datum.state_code == 'QLD' ? 156 : datum.state_code == 'VIC' ? 141 : datum.state_code == 'TAS' ? 151 : datum.state_code == 'SA' ? 124 : datum.longitude","as":"label_lon"},
         {"calculate":"datum.state_code == 'ACT' ? -37 : datum.state_code == 'NSW' ? -30 : datum.state_code == 'QLD' ? -22 : datum.state_code == 'VIC' ? -42 : datum.state_code == 'TAS' ? -46 : datum.state_code == 'SA' ? -38 : datum.latitude","as":"label_lat"},
@@ -46,7 +46,7 @@
       ]
     },
     {
-      "data": {"url": "./data/heritage-place-points.csv", "format":{"type":"csv", "parse":{"place_id":"number", "longitude":"number", "latitude":"number", "source_feature_count":"number", "location_source_object_id":"number", "approx_source_flag":"boolean", "registration_date":"string"}}},
+      "data": {"url": "https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-place-points.csv", "format":{"type":"csv", "parse":{"place_id":"number", "longitude":"number", "latitude":"number", "source_feature_count":"number", "location_source_object_id":"number", "approx_source_flag":"boolean", "registration_date":"string"}}},
       "transform": [
         {"calculate": "join(split(datum.state_codes, '|'), ', ')", "as": "full_states"},
         {"calculate": "replace(datum.full_states, 'NSW', 'New South Wales')", "as": "full_states"},

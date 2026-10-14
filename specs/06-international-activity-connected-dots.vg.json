@@ -2,7 +2,7 @@
   "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
   "description":"Three international activities with counts in both July-to-June periods. Questions expanded from 2022.",
   "width":"container","height":370,"autosize":{"type":"fit","contains":"padding"},"padding":{"left":8,"right":24,"top":30,"bottom":8},
-  "data":{"url":"./data/first-nations-activities.json"},
+  "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/first-nations-activities.json"},
   "transform":[
     {"filter":"datum.cohort == 'international' && isValid(datum.trips_2018_19_reported) && isValid(datum.trips_2023_24_reported)"},
     {"calculate":"datum.activity_id == 'art_craft_cultural_displays' ? 'Art, craft and|cultural displays' : datum.activity_id == 'site_community' ? 'Site or community|visits' : 'Performances'","as":"activity_display"},

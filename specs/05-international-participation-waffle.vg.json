@@ -2,7 +2,7 @@
   "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
   "description":"Rounded 15% participation share, July 2023 to June 2024. Squares are percentage-point layout units, not individual trips.",
   "width":{"step":40},"height":{"step":40},"padding":{"left":2,"right":120,"top":4,"bottom":4},
-  "data":{"url":"./data/first-nations-international-participation.json"},
+  "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/first-nations-international-participation.json"},
   "transform":[
     {"filter":"datum.financial_year == '2023/24'"},
     {"calculate":"sequence(0,100)","as":"cells"},

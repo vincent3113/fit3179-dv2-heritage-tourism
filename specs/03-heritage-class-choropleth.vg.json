@@ -6,9 +6,9 @@
   "params":[{"name":"heritageClass","value":"Indigenous","bind":{"input":"radio","options":["Historic","Indigenous","Natural"],"name":"Classification"}}],
   "layer":[
     {
-      "data":{"url":"./data/australia-states.topojson","format":{"type":"topojson","feature":"states"}},
+      "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/australia-states.topojson","format":{"type":"topojson","feature":"states"}},
       "transform":[
-        {"lookup":"properties.state_code","from":{"data":{"url":"./data/heritage-state-class.csv","format":{"type":"csv","parse":{"listed_places":"number","historic_places":"number","indigenous_places":"number","natural_places":"number","historic_share_pct":"number","indigenous_share_pct":"number","natural_share_pct":"number"}}},"key":"state_code","fields":["state_code","state_name","listed_places","historic_places","indigenous_places","natural_places","historic_share_pct","indigenous_share_pct","natural_share_pct"]}},
+        {"lookup":"properties.state_code","from":{"data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-state-class.csv","format":{"type":"csv","parse":{"listed_places":"number","historic_places":"number","indigenous_places":"number","natural_places":"number","historic_share_pct":"number","indigenous_share_pct":"number","natural_share_pct":"number"}}},"key":"state_code","fields":["state_code","state_name","listed_places","historic_places","indigenous_places","natural_places","historic_share_pct","indigenous_share_pct","natural_share_pct"]}},
         {"calculate":"heritageClass == 'Historic' ? datum.historic_share_pct : heritageClass == 'Natural' ? datum.natural_share_pct : datum.indigenous_share_pct","as":"selected_share"},
         {"calculate":"heritageClass == 'Historic' ? datum.historic_places : heritageClass == 'Natural' ? datum.natural_places : datum.indigenous_places","as":"selected_count"},
         {"calculate":"format(datum.selected_share,'.1f') + '%'","as":"share_label"}
@@ -20,9 +20,9 @@
       }
     },
     {
-      "data":{"url":"./data/state-label-points.csv","format":{"type":"csv","parse":{"longitude":"number","latitude":"number"}}},
+      "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/state-label-points.csv","format":{"type":"csv","parse":{"longitude":"number","latitude":"number"}}},
       "transform":[
-        {"lookup":"state_code","from":{"data":{"url":"./data/heritage-state-class.csv","format":{"type":"csv","parse":{"listed_places":"number","historic_places":"number","indigenous_places":"number","natural_places":"number","historic_share_pct":"number","indigenous_share_pct":"number","natural_share_pct":"number"}}},"key":"state_code","fields":["listed_places","historic_places","indigenous_places","natural_places","historic_share_pct","indigenous_share_pct","natural_share_pct"]}},
+        {"lookup":"state_code","from":{"data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-state-class.csv","format":{"type":"csv","parse":{"listed_places":"number","historic_places":"number","indigenous_places":"number","natural_places":"number","historic_share_pct":"number","indigenous_share_pct":"number","natural_share_pct":"number"}}},"key":"state_code","fields":["listed_places","historic_places","indigenous_places","natural_places","historic_share_pct","indigenous_share_pct","natural_share_pct"]}},
         {"calculate":"heritageClass == 'Historic' ? datum.historic_share_pct : heritageClass == 'Natural' ? datum.natural_share_pct : datum.indigenous_share_pct","as":"selected_share"},
         {"calculate":"heritageClass == 'Historic' ? datum.historic_places : heritageClass == 'Natural' ? datum.natural_places : datum.indigenous_places","as":"selected_count"},
         {"calculate":"datum.state_code == 'ACT' ? 156 : datum.state_code == 'NSW' ? 150 : datum.state_code == 'VIC' ? 144 : datum.state_code == 'TAS' ? 151 : datum.longitude","as":"label_lon"},
@@ -37,7 +37,7 @@
       ]
     },
     {
-      "data":{"url":"./data/heritage-state-class.csv","format":{"type":"csv","parse":{"listed_places":"number","historic_places":"number","indigenous_places":"number","natural_places":"number","historic_share_pct":"number","indigenous_share_pct":"number","natural_share_pct":"number"}}},
+      "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-state-class.csv","format":{"type":"csv","parse":{"listed_places":"number","historic_places":"number","indigenous_places":"number","natural_places":"number","historic_share_pct":"number","indigenous_share_pct":"number","natural_share_pct":"number"}}},
       "transform":[
         {"calculate":"heritageClass == 'Historic' ? datum.historic_share_pct : heritageClass == 'Natural' ? datum.natural_share_pct : datum.indigenous_share_pct","as":"selected_share"},
         {"window":[{"op":"row_number","as":"rank"}],"sort":[{"field":"selected_share","order":"descending"}]},

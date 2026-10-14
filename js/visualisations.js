@@ -1,5 +1,6 @@
 // Relative URLs work locally and below a GitHub Pages project path.
 const pageBase = new URL(".", document.baseURI).href;
+const dataBase = "https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/";
 const charts = [
   {
     id: "chart-01",
@@ -281,7 +282,7 @@ function loadData(fileName) {
     }
     let response;
     try {
-      response = await fetch(new URL("./data/" + fileName, pageBase));
+      response = await fetch(new URL(fileName, dataBase));
     } catch (error) {
       throw new Error("Unable to load " + fileName + ". Check your connection.", {cause: error});
     }
@@ -298,17 +299,6 @@ function loadData(fileName) {
   return promise;
 }
 
-// Keep data URLs tied to this site when the spec opens on the editor's domain.
-function resolveDataUrls(node) {
-  if (!node || typeof node !== "object") return;
-  if (typeof node.data?.url === "string") {
-    node.data.url = new URL(node.data.url, pageBase).href;
-  }
-  for (const [key, child] of Object.entries(node)) {
-    if (key !== "values" && key !== "datasets") resolveDataUrls(child);
-  }
-}
-
 async function embedChart(entry) {
   const container = document.getElementById(entry.id);
   const status = document.getElementById(entry.id + "-status");
@@ -318,7 +308,6 @@ async function embedChart(entry) {
     const response = await fetch(new URL(entry.specUrl,pageBase), {cache:"no-cache"});
     if (!response.ok) throw new Error("Unable to load the chart specification: " + response.status);
     let specification = await response.json();
-    resolveDataUrls(specification);
     // Apply the shared reading size after source config, which overrides embed defaults.
     specification.config = {...specification.config,
       axis: {...specification.config?.axis, labelFontSize: 16, titleFontSize: 16}};
