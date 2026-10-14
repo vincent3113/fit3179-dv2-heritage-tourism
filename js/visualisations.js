@@ -20,7 +20,6 @@ const charts = [
 ];
 
 const dataCache = new Map();
-const rawDataCache = new Map();
 const chartResults = new Map();
 const stateNames = {
   NSW: "New South Wales",
@@ -273,7 +272,7 @@ function populateAnnualTripList(rows) {
   }
 }
 
-// The pre-flight and Vega loader share the same successful download.
+// Share validated datasets used by the charts' checks, summaries and record tables.
 function loadData(fileName) {
   if (dataCache.has(fileName)) return dataCache.get(fileName);
   const promise = (async () => {
@@ -292,7 +291,6 @@ function loadData(fileName) {
     const raw = await response.text();
     const parsed = fileName.endsWith(".csv") ? vega.read(raw, {type:"csv", parse:csvParse[fileName]}) : JSON.parse(raw);
     const value = validateData(fileName, parsed);
-    rawDataCache.set(fileName, raw);
     return value;
   })();
   dataCache.set(fileName, promise);
@@ -300,27 +298,27 @@ function loadData(fileName) {
   return promise;
 }
 
+// Keep data URLs tied to this site when the spec opens on the editor's domain.
+function resolveDataUrls(node) {
+  if (!node || typeof node !== "object") return;
+  if (typeof node.data?.url === "string") {
+    node.data.url = new URL(node.data.url, pageBase).href;
+  }
+  for (const [key, child] of Object.entries(node)) {
+    if (key !== "values" && key !== "datasets") resolveDataUrls(child);
+  }
+}
+
 async function embedChart(entry) {
   const container = document.getElementById(entry.id);
   const status = document.getElementById(entry.id + "-status");
   try {
     await Promise.all(entry.dataFiles.map(loadData));
-    const loader = vega.loader({baseURL: pageBase});
-    const ordinaryLoad = loader.load.bind(loader);
-    const dataBase = new URL("./data/", pageBase).href;
-    loader.load = async (uri, options) => {
-      const resolved = new URL(uri, pageBase).href;
-      if (resolved.startsWith(dataBase)) {
-        const fileName = resolved.slice(dataBase.length);
-        await loadData(fileName);
-        return rawDataCache.get(fileName);
-      }
-      return ordinaryLoad(uri, options);
-    };
     // Revalidate specifications so a revised page cannot keep an older chart layout.
     const response = await fetch(new URL(entry.specUrl,pageBase), {cache:"no-cache"});
     if (!response.ok) throw new Error("Unable to load the chart specification: " + response.status);
     let specification = await response.json();
+    resolveDataUrls(specification);
     // Apply the shared reading size after source config, which overrides embed defaults.
     specification.config = {...specification.config,
       axis: {...specification.config?.axis, labelFontSize: 16, titleFontSize: 16}};
@@ -338,8 +336,7 @@ async function embedChart(entry) {
         // Account for the local font's glyph bounds, not just Vega's text baselines.
         legend: {titlePadding: 10, labelOffset: 8, columnPadding: 30, rowPadding: 8,
           gradientLength: 250, gradientThickness: 12, gradientLabelOffset: 12, offset: 16}
-      },
-      loader
+      }
     });
     chartResults.set(entry.id, result);
     if (entry.id === "chart-03") {
