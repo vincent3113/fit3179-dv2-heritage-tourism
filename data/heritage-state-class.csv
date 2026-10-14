@@ -1,0 +1,9 @@
+state_code,state_name,listed_places,historic_places,indigenous_places,natural_places,historic_share_pct,indigenous_share_pct,natural_share_pct
+NSW,New South Wales,30,18,4,8,60.0,13.333333333333334,26.666666666666668
+VIC,Victoria,30,23,4,3,76.66666666666667,13.333333333333334,10.0
+QLD,Queensland,14,3,3,8,21.428571428571427,21.428571428571427,57.142857142857146
+SA,South Australia,10,5,1,4,50.0,10.0,40.0
+WA,Western Australia,16,4,3,9,25.0,18.75,56.25
+TAS,Tasmania,13,9,2,2,69.23076923076923,15.384615384615385,15.384615384615385
+NT,Northern Territory,6,0,3,3,0.0,50.0,50.0
+ACT,Australian Capital Territory,5,4,0,1,80.0,0.0,20.0

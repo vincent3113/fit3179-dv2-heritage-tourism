@@ -1,0 +1,24 @@
+{
+  "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+  "description":"Four complete NSW culture and heritage activity pairs, calendar 2024. Suppressed festival pair excluded.",
+  "width":"container","height":360,"autosize":{"type":"fit","contains":"padding"},"padding":{"left":8,"right":30,"top":10,"bottom":8},
+  "data":{"url":"./data/nsw-activities.json"},
+  "transform":[
+    {"filter":"datum.activity_label_source != 'Attend festivals / fairs or cultural events'"},
+    {"calculate":"datum.activity_label_source == 'Visit museums or art galleries' ? 'Museums or|art galleries' : datum.activity_label_source == 'Go to markets' ? 'Markets' : datum.activity_label_source == 'Attend theatre, concerts or other performing arts' ? 'Theatre, concerts|or performing arts' : 'Heritage buildings,|sites or monuments'","as":"activity_display"},
+    {"calculate":"format(datum.visitor_share_pct_reported,'.0f') + '%'","as":"share_label"},
+    {"calculate":"datum.cohort == 'domestic_overnight' ? 'Overnight' : 'Day trips'","as":"cohort_display"}
+  ],
+  "encoding":{
+    "y":{"field":"activity_display","type":"nominal","sort":["Museums or|art galleries","Markets","Theatre, concerts|or performing arts","Heritage buildings,|sites or monuments"],"axis":{"title":null,"labelExpr":"split(datum.label,'|')","labelLineHeight":20,"labelLimit":200,"minExtent":150}},
+    "yOffset":{"field":"cohort","type":"nominal","sort":["domestic_overnight","domestic_daytrip"]},
+    "x":{"field":"visitor_share_pct_reported","type":"quantitative","scale":{"domain":[0,30],"zero":true},"axis":{"title":"Share of each culture and heritage visitor group","values":[0,10,20,30],"labelExpr":"datum.label + '%'"}},
+    "tooltip":[{"field":"activity_label_source","title":"Source activity"},{"field":"cohort_display","title":"Domestic visitor group"},{"field":"share_label","title":"Share of this group"}]
+  },
+  "layer":[
+    {"mark":{"type":"bar","size":22},"encoding":{"color":{"field":"cohort","type":"nominal","scale":{"domain":["domestic_overnight","domestic_daytrip"],"range":["#1d5f99","#b65a17"]},"legend":null}}},
+    {"mark":{"type":"text","align":"left","dx":6,"fontSize":14,"color":"#20303d"},"encoding":{"text":{"field":"share_label"}}},
+    {"transform":[{"filter":"datum.activity_label_source == 'Attend theatre, concerts or other performing arts' && datum.cohort == 'domestic_overnight'"}],"mark":{"type":"text","align":"left","fontSize":14,"color":"white"},"encoding":{"x":{"datum":1},"text":{"value":"Same share as day trips"},"tooltip":null}}
+  ],
+  "config":{"font":"Source Sans 3","view":{"stroke":null},"axis":{"labelFontSize":14,"titleFontSize":14,"titleFontWeight":"normal","labelColor":"#20303d","titleColor":"#20303d","gridColor":"#e7edf1","domain":false,"ticks":false}}
+}

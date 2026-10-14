@@ -1,0 +1,83 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "120 distinct National Heritage List places across eight selected states and territories, snapshot retrieved 4 October 2026. Six external-territory places are excluded. One equal-sized dot represents one selected place. Coordinates are source-derived interior display positions, not entrances. Nearby places can overlap. The webpage provides a complete list of the selected records.",
+  "width": "container",
+  "height": 560,
+  "autosize": {"type": "fit", "contains": "padding"},
+  "padding": 8,
+  "projection": {
+    "type": "albers",
+    "rotate": [-132, 0, 0],
+    "center": [0, -27],
+    "parallels": [-18, -36]
+  },
+  "layer": [
+    {
+      "data": {
+        "url": "./data/australia-states.topojson",
+        "format": {"type": "topojson", "feature": "states"}
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "#e7edf1",
+        "stroke": "#8b9ba7",
+        "strokeWidth": 0.7
+      },
+      "encoding": {
+        "tooltip": [{"field": "properties.state_name", "type": "nominal", "title": "State or territory"}]
+      }
+    },
+    {
+      "data": {"url": "./data/state-label-points.csv", "format":{"type":"csv", "parse":{"longitude":"number", "latitude":"number"}}},
+      "transform": [
+        {"calculate":"datum.state_code == 'ACT' ? 156 : datum.state_code == 'NSW' ? 161 : datum.state_code == 'QLD' ? 156 : datum.state_code == 'VIC' ? 141 : datum.state_code == 'TAS' ? 151 : datum.state_code == 'SA' ? 124 : datum.longitude","as":"label_lon"},
+        {"calculate":"datum.state_code == 'ACT' ? -37 : datum.state_code == 'NSW' ? -30 : datum.state_code == 'QLD' ? -22 : datum.state_code == 'VIC' ? -42 : datum.state_code == 'TAS' ? -46 : datum.state_code == 'SA' ? -38 : datum.latitude","as":"label_lat"},
+        {"calculate":"datum.state_code == 'ACT' ? ['Australian Capital','Territory'] : datum.state_code == 'WA' ? ['Western','Australia'] : datum.state_code == 'NT' ? ['Northern','Territory'] : [datum.state_name]","as":"name_lines"}
+      ],
+      "layer": [
+        {
+          "mark": {"type":"rule","color":"#8b9ba7","strokeWidth":0.7},
+          "encoding": {"longitude":{"field":"longitude"},"latitude":{"field":"latitude"},"longitude2":{"field":"label_lon"},"latitude2":{"field":"label_lat"}}
+        },
+        {
+          "mark": {"type":"text","fontSize":14,"lineHeight":20,"color":"#20303d","stroke":"white","strokeWidth":1,"strokeJoin":"round"},
+          "encoding": {"longitude":{"field":"label_lon"},"latitude":{"field":"label_lat"},"text":{"field":"name_lines"},"tooltip":null}
+        }
+      ]
+    },
+    {
+      "data": {"url": "./data/heritage-place-points.csv", "format":{"type":"csv", "parse":{"place_id":"number", "longitude":"number", "latitude":"number", "source_feature_count":"number", "location_source_object_id":"number", "approx_source_flag":"boolean", "registration_date":"string"}}},
+      "transform": [
+        {"calculate": "join(split(datum.state_codes, '|'), ', ')", "as": "full_states"},
+        {"calculate": "replace(datum.full_states, 'NSW', 'New South Wales')", "as": "full_states"},
+        {"calculate": "replace(datum.full_states, 'VIC', 'Victoria')", "as": "full_states"},
+        {"calculate": "replace(datum.full_states, 'QLD', 'Queensland')", "as": "full_states"},
+        {"calculate": "replace(datum.full_states, 'WA', 'Western Australia')", "as": "full_states"},
+        {"calculate": "replace(datum.full_states, 'SA', 'South Australia')", "as": "full_states"},
+        {"calculate": "replace(datum.full_states, 'TAS', 'Tasmania')", "as": "full_states"},
+        {"calculate": "replace(datum.full_states, 'NT', 'Northern Territory')", "as": "full_states"},
+        {"calculate": "replace(datum.full_states, 'ACT', 'Australian Capital Territory')", "as": "full_states"},
+        {"calculate": "utcFormat(toDate(datum.registration_date), '%e %B %Y')", "as": "listing_date"},
+        {"calculate": "datum.approx_source_flag ? 'Source-generalised display location, not an entrance' : 'Interior display point, not an entrance'", "as": "position_note"}
+      ],
+      "mark": {"type": "circle", "size": 40, "color": "#1d5f99", "opacity": 0.85},
+      "encoding": {
+        "longitude": {"field": "longitude", "type": "quantitative"},
+        "latitude": {"field": "latitude", "type": "quantitative"},
+        "tooltip": [
+          {"field": "name", "type": "nominal", "title": "Place"},
+          {"field": "heritage_class", "type": "nominal", "title": "Classification"},
+          {"field": "full_states", "type": "nominal", "title": "State or territory"},
+          {"field": "listing_date", "type": "nominal", "title": "Listing date"},
+          {"field": "position_note", "type": "nominal", "title": "Location"}
+        ]
+      }
+    }
+  ],
+  "config": {
+    "font": "Source Sans 3",
+    "view": {"stroke": null},
+    "axis": {"labelFontSize": 14, "titleFontSize": 14},
+    "legend": {"labelFontSize": 14, "titleFontSize": 14}
+  }
+}

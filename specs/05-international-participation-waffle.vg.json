@@ -1,0 +1,31 @@
+{
+  "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+  "description":"Rounded 15% participation share, July 2023 to June 2024. Squares are percentage-point layout units, not individual trips.",
+  "width":{"step":40},"height":{"step":40},"padding":{"left":2,"right":120,"top":4,"bottom":4},
+  "data":{"url":"./data/first-nations-international-participation.json"},
+  "transform":[
+    {"filter":"datum.financial_year == '2023/24'"},
+    {"calculate":"sequence(0,100)","as":"cells"},
+    {"flatten":["cells"],"as":["cell"]},
+    {"calculate":"floor(datum.cell / 10)","as":"row"},
+    {"calculate":"datum.cell % 10","as":"column"},
+    {"calculate":"datum.cell < datum.fn_share_of_all_international_trips_pct_reported ? 'Included a First Nations activity' : 'Other international trips'","as":"participation"}
+  ],
+  "encoding":{
+    "x":{"field":"column","type":"ordinal","sort":[0,1,2,3,4,5,6,7,8,9],"axis":null,"scale":{"paddingInner":0,"paddingOuter":0}},
+    "y":{"field":"row","type":"ordinal","sort":[0,1,2,3,4,5,6,7,8,9],"axis":null,"scale":{"paddingInner":0,"paddingOuter":0}},
+    "color":{"field":"participation","type":"nominal","scale":{"domain":["Included a First Nations activity","Other international trips"],"range":["#1d5f99","#e7edf1"]},"legend":null},
+    "tooltip":[{"field":"participation","title":"International trips"},{"field":"financial_year","title":"July-to-June year"}]
+  },
+  "layer":[
+    {"mark":{"type":"rect","stroke":"white","strokeWidth":3}},
+    {"transform":[{"filter":"datum.cell == 0"},{"calculate":"'About ' + format(datum.fn_share_of_all_international_trips_pct_reported,'.0f') + '%'","as":"share_note"}],"mark":{"type":"text","align":"left","baseline":"top","fontSize":36,"fontWeight":600,"color":"#20303d"},"encoding":{"x":{"value":432},"y":{"value":64},"color":{"value":"#20303d"},"text":{"field":"share_note"},"tooltip":null}},
+    {"transform":[{"filter":"datum.cell == 0"}],"mark":{"type":"text","align":"left","baseline":"top","fontSize":17,"color":"#20303d"},"encoding":{"x":{"value":432},"y":{"value":118},"color":{"value":"#20303d"},"text":{"value":"included a First Nations activity"},"tooltip":null}},
+    {"transform":[{"filter":"datum.cell == 0"},{"calculate":"[format(datum.international_fn_trips_reported,',') + ' of ' + format(datum.all_international_trips_reported,',') + ' trips', 'Reported share is rounded']","as":"annotation"}],"mark":{"type":"text","align":"left","baseline":"top","fontSize":15,"lineHeight":24,"color":"#52616d"},"encoding":{"x":{"value":432},"y":{"value":154},"color":{"value":"#52616d"},"text":{"field":"annotation"},"tooltip":null}},
+    {"transform":[{"filter":"datum.cell == 0"}],"mark":{"type":"text","align":"left","baseline":"top","fontSize":14,"lineHeight":24,"color":"#52616d"},"encoding":{"x":{"value":432},"y":{"value":230},"color":{"value":"#52616d"},"text":{"value":["The pale 85% is a rounded complement,","not a separately reported estimate."]},"tooltip":null}},
+    {"transform":[{"filter":"datum.cell == 0"}],"mark":{"type":"rule","color":"#52616d"},"encoding":{"x":{"value":400},"x2":{"value":416},"y":{"value":20},"color":{"value":"#52616d"},"tooltip":null}},
+    {"transform":[{"filter":"datum.cell == 0"}],"mark":{"type":"rule","color":"#52616d"},"encoding":{"x":{"value":416},"y":{"value":20},"y2":{"value":88},"color":{"value":"#52616d"},"tooltip":null}},
+    {"transform":[{"filter":"datum.cell == 0"}],"mark":{"type":"rule","color":"#52616d"},"encoding":{"x":{"value":416},"x2":{"value":424},"y":{"value":88},"color":{"value":"#52616d"},"tooltip":null}}
+  ],
+  "config":{"view":{"stroke":null},"font":"Source Sans 3"}
+}

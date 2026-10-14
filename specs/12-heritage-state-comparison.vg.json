@@ -1,0 +1,39 @@
+{
+  "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+  "description":"One coordinated state-total and classification-count chart. Cross-state places count in each relevant state.",
+  "data":{"url":"./data/heritage-state-class.json"},
+  "spacing":24,
+  "resolve":{"legend":{"color":"independent"}},
+  "hconcat":[
+    {
+      "width":320,"height":480,
+      "encoding":{
+        "y":{"field":"state_name","type":"nominal","sort":["New South Wales","Victoria","Western Australia","Queensland","Tasmania","South Australia","Northern Territory","Australian Capital Territory"],"axis":{"title":null,"labelLimit":230,"minExtent":190}},
+        "x":{"field":"listed_places","type":"quantitative","scale":{"domain":[0,30],"zero":true},"axis":{"title":"Total listed places","values":[0,10,20,30]}},
+        "tooltip":[{"field":"state_name","title":"State or territory"},{"field":"listed_places","title":"Total state memberships"}]
+      },
+      "layer":[
+        {"mark":{"type":"bar","color":"#52616d","size":24}},
+        {"mark":{"type":"text","align":"left","dx":7,"color":"#20303d","fontSize":14},"encoding":{"text":{"field":"listed_places"}}}
+      ]
+    },
+    {
+      "width":330,"height":480,
+      "transform":[
+        {"fold":["historic_places","indigenous_places","natural_places"],"as":["class_field","class_count"]},
+        {"calculate":"datum.class_field == 'historic_places' ? 'Historic' : datum.class_field == 'indigenous_places' ? 'Indigenous' : 'Natural'","as":"heritage_class"}
+      ],
+      "encoding":{
+        "y":{"field":"state_name","type":"nominal","sort":["New South Wales","Victoria","Western Australia","Queensland","Tasmania","South Australia","Northern Territory","Australian Capital Territory"],"axis":null},
+        "x":{"field":"heritage_class","type":"nominal","sort":["Historic","Indigenous","Natural"],"axis":{"title":null,"orient":"top","labelAngle":0,"labelPadding":10}},
+        "tooltip":[{"field":"state_name","title":"State or territory"},{"field":"heritage_class","title":"Classification"},{"field":"class_count","title":"Listed places"}]
+      },
+      "layer":[
+        {"mark":{"type":"rect","stroke":"white","strokeWidth":2},"encoding":{"color":{"field":"class_count","type":"quantitative","scale":{"domain":[0,15,30],"range":["#eff3ff","#b4c7db","#05204b"],"interpolate":"rgb"},"legend":null}}},
+        {"mark":{"type":"text","fontSize":14,"fontWeight":600,"dy":{"expr":"datum.state_code == 'VIC' && datum.class_field == 'historic_places' ? -12 : 0"}},"encoding":{"text":{"field":"class_count"},"color":{"condition":{"test":"datum.class_count >= 21","value":"white"},"value":"#20303d"}}},
+        {"transform":[{"filter":"datum.state_code == 'VIC' && datum.class_field == 'historic_places'"},{"calculate":"'NSW'","as":"comparison_key"},{"lookup":"comparison_key","from":{"data":{"url":"./data/heritage-state-class.json"},"key":"state_code","fields":["historic_places"]},"as":["comparison_historic"]},{"calculate":"format(datum.class_count-datum.comparison_historic,'.0f') + ' more than NSW'","as":"comparison_note"}],"mark":{"type":"text","fontSize":12,"dy":14,"color":"white"},"encoding":{"text":{"field":"comparison_note"},"tooltip":null}}
+      ]
+    }
+  ],
+  "config":{"font":"Source Sans 3","view":{"stroke":null},"axis":{"labelFontSize":14,"titleFontSize":14,"titleFontWeight":"normal","labelColor":"#20303d","titleColor":"#20303d","gridColor":"#e7edf1","domain":false,"ticks":false},"legend":{"labelFontSize":14,"titleFontSize":14,"titleFontWeight":"normal","labelColor":"#20303d","titleColor":"#20303d"}}
+}

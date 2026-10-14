@@ -1,0 +1,24 @@
+{
+  "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+  "description":"Overlapping activity shares among domestic and international First Nations trips, July 2023 to June 2024.",
+  "width":"container","height":560,"autosize":{"type":"fit","contains":"padding"},"padding":8,
+  "data":{"url":"./data/first-nations-activities.json"},
+  "transform":[
+    {"calculate":"datum.activity_id == 'site_community' ? 'Aboriginal site|or community visits' : datum.activity_id == 'art_craft_cultural_displays' ? 'Aboriginal art, craft|and cultural displays' : datum.activity_id == 'traditional_activities' ? 'Traditional activities' : datum.activity_id == 'guided_tour' ? 'Tours with an|Aboriginal guide' : datum.activity_id == 'performance' ? 'Aboriginal|performances' : datum.activity_id == 'food_experience' ? 'Aboriginal food|experiences' : 'Camping on|Aboriginal land'","as":"activity_display"},
+    {"calculate":"datum.cohort == 'international' ? 'International' : 'Domestic day and overnight'","as":"cohort_display"},
+    {"calculate":"format(datum.share_of_fn_trips_2023_24_pct_reported,'.0f') + '%'","as":"share_label"},
+    {"joinaggregate":[{"op":"max","field":"share_of_fn_trips_2023_24_pct_reported","as":"high_share"},{"op":"min","field":"share_of_fn_trips_2023_24_pct_reported","as":"low_share"}],"groupby":["activity_id"]},
+    {"calculate":"format(datum.high_share-datum.low_share,'.0f') + ' percentage points higher'","as":"gap_note"}
+  ],
+  "encoding":{
+    "y":{"field":"activity_display","type":"nominal","sort":["Aboriginal site|or community visits","Aboriginal art, craft|and cultural displays","Traditional activities","Tours with an|Aboriginal guide","Aboriginal|performances","Aboriginal food|experiences","Camping on|Aboriginal land"],"axis":{"title":null,"labelExpr":"split(datum.label,'|')","labelLimit":210,"labelLineHeight":20,"labelPadding":10,"minExtent":150}},
+    "x":{"field":"cohort_display","type":"nominal","sort":["Domestic day and overnight","International"],"axis":{"title":null,"orient":"top","labelAngle":0,"labelPadding":12,"labelLimit":260}},
+    "tooltip":[{"field":"activity_label_source","title":"Source activity wording"},{"field":"cohort_display","title":"Trip group"},{"field":"share_label","title":"Share of First Nations trips"},{"field":"trips_2023_24_reported","title":"Reported activity trips","format":","}]
+  },
+  "layer":[
+    {"mark":{"type":"rect","stroke":"white","strokeWidth":3},"encoding":{"color":{"field":"share_of_fn_trips_2023_24_pct_reported","type":"quantitative","scale":{"domain":[0,50,100],"range":["#eff3ff","#b4c7db","#05204b"],"interpolate":"rgb"},"legend":null}}},
+    {"mark":{"type":"text","fontSize":16,"fontWeight":600,"dy":{"expr":"datum.activity_id == 'art_craft_cultural_displays' && datum.cohort == 'international' || datum.activity_id == 'site_community' && datum.cohort == 'domestic_day_and_overnight' ? -12 : 0"}},"encoding":{"text":{"field":"share_label"},"color":{"condition":{"test":"datum.share_of_fn_trips_2023_24_pct_reported >= 70","value":"white"},"value":"#20303d"}}},
+    {"transform":[{"filter":"datum.activity_id == 'art_craft_cultural_displays' && datum.cohort == 'international' || datum.activity_id == 'site_community' && datum.cohort == 'domestic_day_and_overnight'"}],"mark":{"type":"text","dy":14,"fontSize":14},"encoding":{"text":{"field":"gap_note"},"color":{"condition":{"test":"datum.cohort == 'international'","value":"white"},"value":"#20303d"},"tooltip":null}}
+  ],
+  "config":{"font":"Source Sans 3","view":{"stroke":null},"axis":{"labelFontSize":14,"labelColor":"#20303d","domain":false,"ticks":false},"legend":{"labelFontSize":14,"titleFontSize":14,"titleFontWeight":"normal","labelColor":"#20303d","titleColor":"#20303d"}}
+}

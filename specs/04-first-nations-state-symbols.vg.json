@@ -1,0 +1,40 @@
+{
+  "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+  "description":"Domestic First Nations overnight trips by state, annual average 2021/22 to 2023/24. Official state anchors, not attractions.",
+  "width":"container","height":610,"autosize":{"type":"fit","contains":"padding"},"padding":20,
+  "projection":{"type":"albers","rotate":[-132,0,0],"center":[0,-27],"parallels":[-18,-36]},
+  "layer":[
+    {"data":{"url":"./data/australia-states.topojson","format":{"type":"topojson","feature":"states"}},"mark":{"type":"geoshape","fill":"#e7edf1","stroke":"#8b9ba7","strokeWidth":0.8}},
+    {
+      "data":{"url":"./data/first-nations-state-counts.csv","format":{"type":"csv","parse":{"longitude":"number","latitude":"number","avg_annual_fn_domestic_overnight_trips_reported":"number"}}},
+      "mark":{"type":"circle","color":"#1d5f99","stroke":"#1d5f99","strokeWidth":1,"opacity":0.55},
+      "encoding":{
+        "order":{"field":"avg_annual_fn_domestic_overnight_trips_reported","type":"quantitative","sort":"descending"},
+        "longitude":{"field":"longitude","type":"quantitative"},"latitude":{"field":"latitude","type":"quantitative"},
+        "size":{"field":"avg_annual_fn_domestic_overnight_trips_reported","type":"quantitative","scale":{"type":"linear","domain":[0,240000],"range":[0,3000],"zero":true},"legend":null},
+        "tooltip":[{"field":"state_name","title":"State or territory"},{"field":"avg_annual_fn_domestic_overnight_trips_reported","title":"Reported annual average","format":","},{"field":"financial_year_start","title":"First financial year"},{"field":"financial_year_end","title":"Last financial year"},{"field":"position_source","title":"Regional anchor"}]
+      }
+    },
+    {
+      "data":{"url":"./data/first-nations-state-counts.csv","format":{"type":"csv","parse":{"longitude":"number","latitude":"number","avg_annual_fn_domestic_overnight_trips_reported":"number"}}},
+      "transform":[
+        {"calculate":"datum.state_code == 'ACT' ? 156 : datum.state_code == 'NSW' ? 150 : datum.state_code == 'VIC' ? 144 : datum.state_code == 'TAS' ? 151 : datum.longitude","as":"label_lon"},
+        {"calculate":"datum.state_code == 'ACT' ? -37 : datum.state_code == 'NSW' ? -30 : datum.state_code == 'VIC' ? -39 : datum.state_code == 'TAS' ? -44 : datum.latitude","as":"label_lat"},
+        {"calculate":"datum.state_code == 'ACT' ? ['Australian Capital','Territory'] : [datum.state_name]","as":"name_lines"},
+        {"calculate":"format(datum.avg_annual_fn_domestic_overnight_trips_reported,',')","as":"value_label"}
+      ],
+      "layer":[
+        {"mark":{"type":"rule","color":"#52616d","strokeWidth":1},"encoding":{"longitude":{"field":"longitude"},"latitude":{"field":"latitude"},"longitude2":{"field":"label_lon"},"latitude2":{"field":"label_lat"}}},
+        {"mark":{"type":"text","fontSize":14,"fontWeight":600,"lineHeight":20,"color":"#20303d","stroke":"white","strokeWidth":3,"strokeJoin":"round","dy":-12},"encoding":{"longitude":{"field":"label_lon"},"latitude":{"field":"label_lat"},"text":{"field":"name_lines"}}},
+        {"mark":{"type":"text","fontSize":14,"color":"#20303d","stroke":"white","strokeWidth":3,"strokeJoin":"round","dy":{"expr":"datum.state_code == 'ACT' ? 34 : 22"}},"encoding":{"longitude":{"field":"label_lon"},"latitude":{"field":"label_lat"},"text":{"field":"value_label"}}}
+      ]
+    },
+    {
+      "data":{"url":"./data/first-nations-state-counts.csv","format":{"type":"csv","parse":{"longitude":"number","latitude":"number","avg_annual_fn_domestic_overnight_trips_reported":"number"}}},
+      "transform":[{"window":[{"op":"row_number","as":"rank"}],"sort":[{"field":"avg_annual_fn_domestic_overnight_trips_reported","order":"descending"}]},{"filter":"datum.rank == 1"},{"calculate":"['Largest reported annual average', datum.state_name + ': ' + format(datum.avg_annual_fn_domestic_overnight_trips_reported,',') + ' trips', 'July 2021 to June 2024']","as":"annotation"}],
+      "mark":{"type":"text","align":"left","baseline":"top","fontSize":14,"lineHeight":22,"color":"#20303d","stroke":"white","strokeWidth":3},
+      "encoding":{"x":{"value":8},"y":{"value":8},"text":{"field":"annotation"}}
+    }
+  ],
+  "config":{"font":"Source Sans 3","view":{"stroke":null},"legend":{"labelFontSize":14,"titleFontSize":14,"titleFontWeight":"normal","labelColor":"#20303d","titleColor":"#20303d"}}
+}

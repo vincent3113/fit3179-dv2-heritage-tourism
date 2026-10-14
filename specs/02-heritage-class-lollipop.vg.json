@@ -1,0 +1,20 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Distinct listed places by register classification in the eight selected states and territories, snapshot 4 October 2026. External territories are excluded.",
+  "width": "container", "height": 190,
+  "autosize": {"type":"fit","contains":"padding"}, "padding": {"left":8,"right":34,"top":20,"bottom":8},
+  "data": {"url":"./data/heritage-place-points.json"},
+  "transform":[{"aggregate":[{"op":"distinct","field":"place_id","as":"class_count"}],"groupby":["heritage_class"]},{"joinaggregate":[{"op":"sum","field":"class_count","as":"total_places"}]},{"calculate":"format(100 * datum.class_count / datum.total_places,'.1f') + '% of the places shown'","as":"share_note"}],
+  "encoding":{
+    "x":{"field":"class_count","type":"quantitative","scale":{"domain":[0,70],"zero":true},"axis":{"title":"Distinct listed places","values":[0,10,20,30,40,50,60,70]}},
+    "y":{"field":"heritage_class","type":"nominal","sort":["Historic","Natural","Indigenous"],"axis":{"title":null,"minExtent":84}},
+    "tooltip":[{"field":"heritage_class","title":"Register classification"},{"field":"class_count","title":"Distinct places","format":","}]
+  },
+  "layer":[
+    {"mark":{"type":"rule","strokeWidth":2,"color":"#8b9ba7"},"encoding":{"x2":{"datum":0}}},
+    {"mark":{"type":"point","filled":true,"size":100,"color":"#1d5f99","opacity":1}},
+    {"mark":{"type":"text","align":"left","dx":12,"color":"#20303d","fontSize":14},"encoding":{"text":{"field":"class_count","format":","}}},
+    {"transform":[{"filter":"datum.heritage_class == 'Historic'"}],"mark":{"type":"text","align":"left","dy":-23,"fontSize":14,"fontWeight":600,"color":"#20303d"},"encoding":{"x":{"datum":12},"text":{"field":"share_note"},"tooltip":null}}
+  ],
+  "config":{"font":"Source Sans 3","view":{"stroke":null},"axis":{"labelFontSize":14,"titleFontSize":14,"titleFontWeight":"normal","labelColor":"#20303d","titleColor":"#20303d","gridColor":"#e7edf1","domainColor":"#8b9ba7","tickColor":"#8b9ba7"}}
+}
