@@ -1,0 +1,81 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Slope chart of three reported international activity pairs. Earlier estimates are always left and later estimates always right. No intervening years are shown.",
+  "width": "container",
+  "height": 520,
+  "autosize": {"type": "fit", "contains": "padding"},
+  "padding": {"left": 8, "right": 12, "top": 18, "bottom": 8},
+  "data": {"url": "https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/first-nations-activities.json"},
+  "transform": [
+    {"filter": "datum.cohort == 'international' && isValid(datum.trips_2018_19_reported) && isValid(datum.trips_2023_24_reported)"},
+    {"calculate": "datum.activity_id == 'art_craft_cultural_displays' ? 'Art, craft and|cultural displays' : datum.activity_id == 'site_community' ? 'Site or community|visits' : 'Performances'", "as": "activity_display"},
+    {"calculate": "datum.trips_2023_24_reported - datum.trips_2018_19_reported", "as": "difference"},
+    {"calculate": "datum.difference > 0 ? format(datum.difference,'+,d') + ' reported trips' : format(-datum.difference,',d') + ' fewer reported trips'", "as": "change_note"},
+    {"calculate": "datum.activity_id == 'site_community' ? 60000 : datum.activity_id == 'performance' ? -60000 : 0", "as": "label_offset"},
+    {"calculate": "datum.trips_2018_19_reported + datum.label_offset", "as": "earlier_label_y"},
+    {"calculate": "datum.trips_2023_24_reported + datum.label_offset", "as": "later_label_y"},
+    {"calculate": "split(datum.activity_display + ' ' + format(datum.trips_2018_19_reported,',d'),'|')", "as": "earlier_label"},
+    {"calculate": "split(format(datum.trips_2023_24_reported,',d') + ' ' + datum.activity_display + '|' + datum.change_note,'|')", "as": "later_label"}
+  ],
+  "encoding": {
+    "x": {
+      "datum": 0, "type": "quantitative",
+      "scale": {"domain": [-0.95, 2.0], "nice": false},
+      "axis": {"title": null, "values": [0, 1], "orient": "top", "grid": false, "labelExpr": "datum.value == 0 ? ['July 2018 to','June 2019'] : ['July 2023 to','June 2024']", "labelLineHeight": 20, "labelPadding": 16}
+    },
+    "y": {
+      "field": "trips_2018_19_reported", "type": "quantitative",
+      "scale": {"domain": [0, 900000], "zero": true, "nice": false},
+      "axis": null
+    },
+    "color": {"field": "activity_id", "type": "nominal", "scale": {"domain": ["art_craft_cultural_displays", "site_community", "performance"], "range": ["#ad6000", "#24764c", "#232529"]}, "legend": null},
+    "tooltip": [
+      {"field": "activity_label_source", "title": "Source activity"},
+      {"field": "trips_2018_19_reported", "title": "July 2018 to June 2019", "format": ",.0f"},
+      {"field": "trips_2023_24_reported", "title": "July 2023 to June 2024", "format": ",.0f"},
+      {"field": "difference", "title": "Later minus earlier estimate", "format": "+,d"}
+    ]
+  },
+  "layer": [
+    {
+      "name": "comparison_segments",
+      "mark": {"type": "rule", "strokeWidth": 2.5},
+      "encoding": {
+        "x2": {"datum": 1}, "y2": {"field": "trips_2023_24_reported"},
+        "strokeDash": {"field": "activity_id", "type": "nominal", "scale": {"domain": ["art_craft_cultural_displays", "site_community", "performance"], "range": [[1,0], [7,4], [2,4]]}, "legend": null}
+      }
+    },
+    {"mark": {"type": "point", "filled": true, "size": 100, "opacity": 1}},
+    {
+      "mark": {"type": "point", "filled": true, "size": 100, "opacity": 1},
+      "encoding": {"x": {"datum": 1}, "y": {"field": "trips_2023_24_reported", "type": "quantitative"}}
+    },
+    {
+      "mark": {"type": "rule", "color": "#8b9ba7", "strokeWidth": 1, "tooltip": false},
+      "encoding": {"x2": {"datum": -0.08}, "y2": {"field": "earlier_label_y"}, "color": {"value": "#8b9ba7"}}
+    },
+    {
+      "mark": {"type": "rule", "color": "#8b9ba7", "strokeWidth": 1, "tooltip": false},
+      "encoding": {"x": {"datum": 1}, "x2": {"datum": 1.08}, "y": {"field": "trips_2023_24_reported", "type": "quantitative"}, "y2": {"field": "later_label_y"}, "color": {"value": "#8b9ba7"}}
+    },
+    {
+      "mark": {"type": "text", "align": "right", "baseline": "middle", "dy": -8, "fontSize": 15, "lineHeight": 20, "fontWeight": 600},
+      "encoding": {"x": {"datum": -0.12}, "y": {"field": "earlier_label_y", "type": "quantitative"}, "text": {"field": "earlier_label"}, "tooltip": null}
+    },
+    {
+      "mark": {"type": "text", "align": "left", "baseline": "middle", "dy": -18, "fontSize": 15, "lineHeight": 20, "fontWeight": 600},
+      "encoding": {"x": {"datum": 1.12}, "y": {"field": "later_label_y", "type": "quantitative"}, "text": {"field": "later_label"}, "tooltip": null}
+    },
+    {
+      "transform": [{"aggregate": [{"op": "count", "as": "pairs"}]}, {"calculate": "90000", "as": "guide_bottom"}, {"calculate": "850000", "as": "guide_top"}],
+      "mark": {"type": "rule", "strokeDash": [2, 3], "strokeWidth": 1},
+      "encoding": {"x": {"datum": 0}, "y": {"field": "guide_bottom", "type": "quantitative"}, "y2": {"field": "guide_top"}, "color": {"value": "#8b9ba7"}, "tooltip": null}
+    },
+    {
+      "transform": [{"aggregate": [{"op": "count", "as": "pairs"}]}, {"calculate": "90000", "as": "guide_bottom"}, {"calculate": "850000", "as": "guide_top"}],
+      "mark": {"type": "rule", "strokeDash": [2, 3], "strokeWidth": 1},
+      "encoding": {"x": {"datum": 1}, "y": {"field": "guide_bottom", "type": "quantitative"}, "y2": {"field": "guide_top"}, "color": {"value": "#8b9ba7"}, "tooltip": null}
+    }
+  ],
+  "config": {"font": "Source Sans 3", "view": {"stroke": null}, "axis": {"labelFontSize": 16, "titleFontSize": 16, "titleFontWeight": "normal", "labelColor": "#20303d", "titleColor": "#20303d", "gridColor": "#e7edf1", "domain": false, "ticks": false}}
+}

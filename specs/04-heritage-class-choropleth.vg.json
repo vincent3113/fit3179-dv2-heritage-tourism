@@ -1,0 +1,54 @@
+{
+  "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+  "description":"Share of each state's listed places in the selected register classification. A continuous 0 to 80 percent colour scale stays fixed across selections. Eighty percent is the maximum across all source classifications.",
+  "width":"container","height":610,"autosize":{"type":"fit","contains":"padding"},"padding":20,
+  "projection":{"type":"albers","rotate":[-132,0,0],"center":[0,-27],"parallels":[-18,-36]},
+  "params":[{"name":"heritageClass","value":"Indigenous","bind":{"input":"radio","options":["Historic","Indigenous","Natural"],"name":"Classification"}}],
+  "layer":[
+    {
+      "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/australia-states.topojson","format":{"type":"topojson","feature":"states"}},
+      "transform":[
+        {"lookup":"properties.state_code","from":{"data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-state-class.csv","format":{"type":"csv","parse":{"listed_places":"number","historic_places":"number","indigenous_places":"number","natural_places":"number","historic_share_pct":"number","indigenous_share_pct":"number","natural_share_pct":"number"}}},"key":"state_code","fields":["state_code","state_name","listed_places","historic_places","indigenous_places","natural_places","historic_share_pct","indigenous_share_pct","natural_share_pct"]}},
+        {"calculate":"heritageClass == 'Historic' ? datum.historic_share_pct : heritageClass == 'Natural' ? datum.natural_share_pct : datum.indigenous_share_pct","as":"selected_share"},
+        {"calculate":"heritageClass == 'Historic' ? datum.historic_places : heritageClass == 'Natural' ? datum.natural_places : datum.indigenous_places","as":"selected_count"},
+        {"calculate":"format(datum.selected_share,'.1f') + '%'","as":"share_label"},
+        {"calculate":"heritageClass","as":"selected_class"}
+      ],
+      "mark":{"type":"geoshape","stroke":"#8b9ba7","strokeWidth":0.8},
+      "encoding":{
+        "color":{"field":"selected_share","type":"quantitative","scale":{"type":"linear","domain":[0,80],"range":["#eff3f6","#254f69"],"interpolate":"lab","nice":false,"zero":true},"legend":null},
+        "tooltip":[{"field":"state_name","title":"State"},{"field":"selected_class","title":"Classification"},{"field":"share_label","title":"Within-state share"},{"field":"selected_count","title":"Places in class","format":","},{"field":"listed_places","title":"State total","format":","}]
+      }
+    },
+    {
+      "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/state-label-points.csv","format":{"type":"csv","parse":{"longitude":"number","latitude":"number"}}},
+      "transform":[
+        {"lookup":"state_code","from":{"data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-state-class.csv","format":{"type":"csv","parse":{"listed_places":"number","historic_places":"number","indigenous_places":"number","natural_places":"number","historic_share_pct":"number","indigenous_share_pct":"number","natural_share_pct":"number"}}},"key":"state_code","fields":["listed_places","historic_places","indigenous_places","natural_places","historic_share_pct","indigenous_share_pct","natural_share_pct"]}},
+        {"calculate":"heritageClass == 'Historic' ? datum.historic_share_pct : heritageClass == 'Natural' ? datum.natural_share_pct : datum.indigenous_share_pct","as":"selected_share"},
+        {"calculate":"heritageClass == 'Historic' ? datum.historic_places : heritageClass == 'Natural' ? datum.natural_places : datum.indigenous_places","as":"selected_count"},
+        {"calculate":"datum.state_code == 'ACT' ? 156 : datum.state_code == 'NSW' ? 150 : datum.state_code == 'VIC' ? 144 : datum.state_code == 'TAS' ? 151 : datum.longitude","as":"label_lon"},
+        {"calculate":"datum.state_code == 'ACT' ? -37 : datum.state_code == 'NSW' ? -30 : datum.state_code == 'VIC' ? -39 : datum.state_code == 'TAS' ? -44 : datum.latitude","as":"label_lat"},
+        {"calculate":"format(datum.selected_share,'.1f') + '%'","as":"share_label"},
+        {"calculate":"heritageClass","as":"selected_class"}
+      ],
+      "encoding":{"tooltip":[{"field":"state_name","title":"State"},{"field":"selected_class","title":"Classification"},{"field":"share_label","title":"Within-state share"},{"field":"selected_count","title":"Places in class","format":","},{"field":"listed_places","title":"State total","format":","}]},
+      "layer":[
+        {"transform":[{"filter":"datum.longitude != datum.label_lon || datum.latitude != datum.label_lat"}],"mark":{"type":"rule","color":"#52616d","strokeWidth":1},"encoding":{"longitude":{"field":"longitude"},"latitude":{"field":"latitude"},"longitude2":{"field":"label_lon"},"latitude2":{"field":"label_lat"}}},
+        {"name":"state_labels","mark":{"type":"text","fontSize":14,"fontWeight":600,"color":"#20303d","stroke":"white","strokeWidth":3,"strokeJoin":"round"},"encoding":{"longitude":{"field":"label_lon"},"latitude":{"field":"label_lat"},"text":{"field":"state_code"}}}
+      ]
+    },
+    {
+      "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-state-class.csv","format":{"type":"csv","parse":{"listed_places":"number","historic_places":"number","indigenous_places":"number","natural_places":"number","historic_share_pct":"number","indigenous_share_pct":"number","natural_share_pct":"number"}}},
+      "transform":[
+        {"calculate":"heritageClass == 'Historic' ? datum.historic_share_pct : heritageClass == 'Natural' ? datum.natural_share_pct : datum.indigenous_share_pct","as":"selected_share"},
+        {"calculate":"heritageClass == 'Historic' ? datum.historic_places : heritageClass == 'Natural' ? datum.natural_places : datum.indigenous_places","as":"selected_count"},
+        {"window":[{"op":"row_number","as":"rank"}],"sort":[{"field":"selected_share","order":"descending"}]},
+        {"filter":"datum.rank == 1"},
+        {"calculate":"['Highest ' + heritageClass + ' share', datum.state_code + ': ' + format(datum.selected_share,'.1f') + '% (' + datum.selected_count + ' of ' + datum.listed_places + ')']","as":"annotation"}
+      ],
+      "mark":{"type":"text","align":"left","baseline":"top","fontSize":14,"lineHeight":22,"color":"#20303d","stroke":"white","strokeWidth":3},
+      "encoding":{"x":{"value":8},"y":{"value":8},"text":{"field":"annotation"}}
+    }
+  ],
+  "config":{"font":"Source Sans 3","view":{"stroke":null}}
+}

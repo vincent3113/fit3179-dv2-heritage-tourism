@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Explore Australia's listed heritage places and the scope of official heritage tourism statistics.">
   <title>Heritage tourism in Australia</title>
-  <link rel="stylesheet" href="./css/styles.css?v=20261007-5">
+  <link rel="stylesheet" href="./css/styles.css?v=20261016-7">
   <script defer src="https://cdn.jsdelivr.net/npm/vega@5.33.0/build/vega.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/vega-lite@5.23.0/build/vega-lite.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/vega-embed@6.29.0/build/vega-embed.min.js"></script>
-  <script defer src="./js/visualisations.js?v=20261014-2"></script>
+  <script defer src="./js/visualisations.js?v=20261021-1"></script>
 </head>
 <body>
   <!--
   THESIS: A source-led reading page makes listed places visible without treating them as tourism attendance.
-  OWN-WORLD: White paper, dark ink, quiet boundaries and equal blue dots. The main title stands alone. Left-aligned section and chart headings lead to two explanatory columns above wide graphics, following the user's reference layout.
+  OWN-WORLD: A heritage-gallery palette on white paper with dark ink, quiet boundaries and equal slate dots. Amethyst and gold identify heritage classifications. Lapis, brick red and berry identify visitor groups. Burnt orange, forest green and graphite identify slope activities. Red and green never appear together in one chart. The main title stands alone. Left-aligned section and chart headings lead to two explanatory columns above wide graphics, following the user's reference layout.
   STORY: Locate listed places, compare register composition, then read scoped tourism participation, activities and change before the New South Wales detail.
   FIRST VIEWPORT: A 52 to 68 px standalone title above 20 px introductory columns leads to a 44 px section heading, 32 px chart title and full-width map. Body and chart labels retain their approved reading sizes. The record list follows the map.
   FORM: User-pinned, code-led four-section reading page through Task 13. No concept seed or approved image comp.
@@ -42,7 +42,7 @@
       <figure class="chart" aria-labelledby="chart-01-heading" aria-describedby="chart-01-caption">
         <h3 id="chart-01-heading">Where listed heritage places are located</h3>
         <p class="chart-subtitle">National Heritage List · Snapshot retrieved 4 October 2026</p>
-        <p class="finding">The list recognises nationally significant places. Of <strong>120 distinct places</strong> in the eight states and territories, <strong>59</strong> are recorded in New South Wales or Victoria, almost half.</p>
+        <p class="finding">The register recognises nationally significant places. This snapshot contains <strong>120 distinct places</strong> across eight states and territories. New South Wales and Victoria account for <strong>59</strong>, almost half.</p>
         <p id="chart-01-caption" class="chart-caption">Six places coded as external territories are excluded. Dots show interior locations, not entrances. Nearby places can overlap, so use the list below for every place shown.</p>
         <p class="dot-key"><span class="key-dot" aria-hidden="true"></span>1 dot = 1 listed place</p>
         <p id="chart-01-status" class="chart-status" role="status" aria-live="polite">Loading the heritage map…</p>
@@ -70,20 +70,19 @@
       <figure class="chart" aria-labelledby="chart-02-heading" aria-describedby="chart-02-caption">
         <h3 id="chart-02-heading">Historic places make up over half of this snapshot</h3>
         <p class="chart-subtitle">Distinct listed places in the eight states and territories shown · Snapshot retrieved 4 October 2026</p>
-        <p class="finding">Historic places account for <strong>65 of the 120</strong> places shown, more than half of this snapshot.</p>
+        <p class="finding">The snapshot contains <strong>65 Historic-classified places</strong>, more than half of the 120 distinct places shown.</p>
         <p id="chart-02-caption" class="chart-caption">The selected records contain 65 Historic, 35 Natural and 20 Indigenous-classified places. These categories do not describe every heritage value of a place.</p>
         <p id="chart-02-status" class="chart-status" role="status">Loading classification counts...</p>
         <div id="chart-02" class="vis-container" aria-busy="true"></div>
       </figure>
       <figure class="chart" aria-labelledby="chart-12-heading" aria-describedby="chart-12-caption">
-        <h3 id="chart-12-heading">Similar totals can hide different classifications</h3>
+        <h3 id="chart-12-heading">Similar totals can have different Historic counts</h3>
         <p class="chart-subtitle">Listed places by state and register category · Snapshot retrieved 4 October 2026</p>
-        <p class="finding">New South Wales and Victoria each have <strong>30 listed places</strong>, but <strong>18 and 23</strong> are Historic-classified respectively.</p>
-        <p id="chart-12-caption" class="chart-caption">Places crossing state borders count once in each state. This gives 124 state counts across 120 distinct places. Zero means no records in that register category, not no heritage.</p>
-        <div class="legend scale-key" data-chart="chart-12" aria-label="Classification count colour scale">
-          <p>Places in each classification</p>
-          <div class="colour-strip" aria-hidden="true"></div>
-          <p class="scale-ticks"><span>0</span><span>10</span><span>20</span><span>30</span></p>
+        <p class="finding">Both states contain <strong>30 listed places</strong>. Historic-classified totals are <strong>18</strong> in New South Wales and <strong>23</strong> in Victoria.</p>
+        <p id="chart-12-caption" class="chart-caption">Each row compares Historic with Natural or Indigenous classifications. Both sides show positive counts. Cross-border places appear in each relevant state, giving 124 state memberships across 120 distinct places. Hover for all three original classification counts.</p>
+        <div class="legend cohort-key" data-chart="chart-12" aria-label="Classification groups and bar directions">
+          <p><span class="historic-swatch" aria-hidden="true"></span>Left: Historic</p>
+          <p><span class="other-class-swatch" aria-hidden="true"></span>Right: Natural or Indigenous</p>
         </div>
         <p id="chart-12-status" class="chart-status" role="status">Loading state comparisons...</p>
         <div id="chart-12" class="vis-container" aria-busy="true"></div>
@@ -92,21 +91,16 @@
         <h3 id="chart-03-heading">Heritage classifications vary across Australia</h3>
         <p id="chart-03-subtitle" class="chart-subtitle">Within-state share of Indigenous-classified listed places · Snapshot 4 October 2026</p>
         <p id="chart-03-summary" class="finding" aria-live="polite"></p>
-        <p id="chart-03-caption" class="chart-caption">A higher share can come from fewer records. The fixed colour classes describe composition, not total counts. Zero means no listed records in that category, not no cultural heritage.</p>
+        <p id="chart-03-caption" class="chart-caption">Darker shading represents a higher within-state percentage. The 0–80% range stays fixed across classifications. Percentages can describe relatively few records. Zero means no places have that register classification. Cultural heritage may still be present. Hover over a state for its share and counts.</p>
         <p class="control-note">Choose a classification to update this map. Each state's total stays the same.</p>
         <fieldset id="chart-03-controls" class="classification-control" aria-describedby="chart-03-control-help">
           <legend>Choose a heritage classification</legend>
           <p id="chart-03-control-help" class="sr-only">Updates this map, its subtitle and finding only.</p>
         </fieldset>
-          <div class="legend class-key" data-chart="chart-03" aria-label="Within-state share colour classes">
+          <div class="legend share-key" data-chart="chart-03" aria-label="Continuous within-state share scale from 0 to 80 percent">
             <p class="legend-title">Share of listed places</p>
-            <div class="legend-items">
-            <p><span style="background:#eff3ff"></span>0 to under 10%</p>
-            <p><span style="background:#bdd7e7"></span>10 to under 20%</p>
-            <p><span style="background:#6baed6"></span>20 to under 40%</p>
-            <p><span style="background:#3182bd"></span>40 to under 60%</p>
-            <p><span style="background:#08519c"></span>60 to 100%</p>
-            </div>
+            <div class="scale-ramp" aria-hidden="true"></div>
+            <div class="scale-ticks"><span>0%</span><span>20%</span><span>40%</span><span>60%</span><span>80%</span></div>
           </div>
         <p id="chart-03-status" class="chart-status" role="status">Loading classification shares...</p>
         <div id="chart-03" class="vis-container" aria-busy="true"></div>
@@ -116,14 +110,14 @@
     <section id="first-nations-participation" class="story-section" aria-labelledby="participation-heading">
       <h2 id="participation-heading">Participation in First Nations tourism</h2>
       <div class="section-intro">
-        <p>Tourism surveys describe trips involving First Nations activities, not visits to the listed places. Financial years run from July to June.</p>
+        <p>Tourism surveys describe First Nations activities, not listed-site attendance. Financial years cover July through June.</p>
         <p>Domestic trips are made by Australian residents. International trips are made by overseas visitors to Australia.</p>
       </div>
       <figure class="chart" aria-labelledby="chart-04-heading" aria-describedby="chart-04-caption">
         <h3 id="chart-04-heading">New South Wales reports the largest overnight estimate</h3>
         <p class="chart-subtitle">Domestic overnight trips per year · Average for July 2021 to June 2024</p>
         <p class="finding">New South Wales has the largest reported average at <strong>240,000 trips per year</strong>. Northern Territory reports <strong>200,000</strong>.</p>
-        <p id="chart-04-caption" class="chart-caption">Circle area represents rounded estimates, with official regional anchors rather than tourist locations. State totals cannot be added into unique visitors.</p>
+        <p id="chart-04-caption" class="chart-caption">Circle area represents rounded estimates, with official regional anchors rather than tourist locations. State totals cannot be added into unique visitors. Hover over circles for exact estimates.</p>
         <div class="legend size-key" data-chart="chart-04" aria-label="Circle area represents average overnight trips per year">
           <p class="legend-title">Average overnight trips per year</p>
           <div class="legend-items">
@@ -140,7 +134,7 @@
         <p class="chart-subtitle">Share of all international trips · July 2023 to June 2024</p>
         <p class="control-note">1 square = 1 percentage point</p>
         <div class="legend cohort-key" data-chart="chart-05" aria-label="International participation categories">
-          <p><span class="overnight-swatch"></span>First Nations activity</p>
+          <p><span class="participation-swatch"></span>First Nations activity</p>
           <p><span class="other-trip-swatch"></span>Other international trips</p>
         </div>
         <p id="chart-05-status" class="chart-status" role="status">Loading international participation...</p>
@@ -152,30 +146,33 @@
       <h2 id="activities-heading">Activities and reported change</h2>
       <div class="section-intro">
         <p>The previous percentage used all international trips. Here, activity shares use only trips involving First Nations activities.</p>
-        <p>One trip can include several activities, so the shares can add to more than 100%. Compare the activities within each trip group.</p>
+        <p>Activities can overlap within one trip. Their percentages can therefore exceed 100%. Compare participation shares within each separate trip group.</p>
       </div>
       <figure class="chart" aria-labelledby="chart-11-heading" aria-describedby="chart-11-caption">
-        <h3 id="chart-11-heading">Activities differ between domestic and international trips</h3>
+        <h3 id="chart-11-heading">Activity profiles differ between domestic and international trips</h3>
         <p class="chart-subtitle">Share of First Nations trips · July 2023 to June 2024</p>
         <p class="finding">Art, craft and displays have a <strong>34 percentage-point higher share</strong> in international trips. Site or community visits have a <strong>29-point higher share</strong> in domestic trips.</p>
-        <p id="chart-11-caption" class="chart-caption">These gaps compare shares, not trip counts. Activities overlap and both columns use the same colour scale. The printed values show smaller differences more precisely.</p>
+        <p id="chart-11-caption" class="chart-caption">Seven activity axes share a percentage scale of 0–100%. Profiles compare aggregate groups, not individual travellers or time. Activities overlap. Hover over percentage labels for reported trip counts.</p>
         <p class="control-note">Domestic shares are calculated from 1,887,000 day and overnight trips.<br>International shares are calculated from 1,099,000 trips.</p>
-        <div class="legend scale-key" data-chart="chart-11" aria-label="Activity share colour scale">
-          <p>Share of each First Nations trip group</p>
-          <div class="colour-strip" aria-hidden="true"></div>
-          <p class="scale-ticks"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></p>
+        <div class="legend cohort-key" data-chart="chart-11" aria-label="Trip groups and percentage label positions">
+          <p><span class="profile-line" aria-hidden="true"></span>Solid line, left label: Domestic day and overnight</p>
+          <p><span class="profile-line international" aria-hidden="true"></span>Dashed line, right label: International</p>
         </div>
         <p id="chart-11-status" class="chart-status" role="status">Loading activity profiles...</p>
         <div id="chart-11" class="vis-container" aria-busy="true"></div>
       </figure>
       <figure class="chart" aria-labelledby="chart-06-heading" aria-describedby="chart-06-caption">
         <h3 id="chart-06-heading">Only one of these three reported activity counts increased</h3>
-        <p class="chart-subtitle">Activity trip estimates · July 2018 to June 2019 compared with July 2023 to June 2024</p>
+        <p class="chart-subtitle">International activity trip estimates · July 2018 to June 2019 compared with July 2023 to June 2024</p>
         <p class="finding">Art, craft and cultural displays: <strong>+125,000</strong> reported trips<br>Site or community visits: <strong>167,000 fewer</strong><br>Performances: <strong>123,000 fewer</strong></p>
-        <p id="chart-06-caption" class="chart-caption">Four activity questions were added from 2022. Only these three activities have international counts in both periods. These differences do not measure demand alone. The connectors do not show what happened between the two years.</p>
-        <div class="legend period-key" data-chart="chart-06">
-          <p><span class="hollow-point"></span>Hollow, upper label: July 2018 to June 2019</p>
-          <p><span class="filled-point"></span>Filled, lower label: July 2023 to June 2024</p>
+        <p id="chart-06-caption" class="chart-caption">Earlier estimates appear left, later estimates right. Colours and line patterns identify activities. Labels show each change. Four questions were added from 2022. These three activities have international counts for both periods. Connectors do not describe intervening years or demand alone.</p>
+        <div class="legend slope-key" data-chart="chart-06" aria-label="Activity colours and line patterns">
+          <p class="legend-title">Activity</p>
+          <div class="legend-items">
+            <p data-activity="art_craft_cultural_displays"><span class="activity-line activity-art" aria-hidden="true"></span>Art, craft and cultural displays</p>
+            <p data-activity="site_community"><span class="activity-line activity-site" aria-hidden="true"></span>Site or community visits</p>
+            <p data-activity="performance"><span class="activity-line activity-performance" aria-hidden="true"></span>Performances</p>
+          </div>
         </div>
         <p id="chart-06-status" class="chart-status" role="status">Loading reported activity comparisons...</p>
         <div id="chart-06" class="vis-container" aria-busy="true"></div>
@@ -187,7 +184,7 @@
           <p id="chart-07-summary"></p>
           <p class="reading-note">Hover for details, or open the annual estimates below.</p>
         </div>
-        <p id="chart-07-caption" class="chart-caption">More activities were included in the questions from 2022. Later estimates are therefore not directly comparable with earlier years. The line breaks before July 2021 to June 2022, the first year affected.</p>
+        <p id="chart-07-caption" class="chart-caption">Questions expanded from 2022, limiting comparisons with earlier estimates. The line breaks before July 2021 to June 2022. That financial year first includes 2022.</p>
         <p id="chart-07-status" class="chart-status" role="status">Loading annual domestic estimates...</p>
         <div id="chart-07" class="vis-container" aria-busy="true"></div>
         <details class="place-register annual-register">
@@ -203,7 +200,7 @@
     <section id="nsw-culture" class="story-section" aria-labelledby="nsw-heading">
       <h2 id="nsw-heading">Culture and heritage tourism in New South Wales</h2>
       <div class="section-intro">
-        <p>New South Wales, on Australia's east coast, ties Victoria at <strong>30 listed places</strong> and reports the largest First Nations overnight average, <strong>240,000 trips per year</strong>.</p>
+        <p>On Australia's east coast, New South Wales shares Victoria's <strong>30-place total</strong>. Its First Nations overnight average is the largest, at <strong>240,000 trips per year</strong>.</p>
         <p>Now we look at its broader domestic culture and heritage group, including markets and performing arts. These separate observations cover January to December 2024, not the national financial years.</p>
       </div>
       <figure class="chart" aria-labelledby="chart-08-heading" aria-describedby="chart-08-caption">
@@ -211,14 +208,14 @@
         <p class="chart-subtitle">Share within separate domestic culture and heritage visitor groups · Calendar 2024</p>
         <p class="finding"><strong>Museums and art galleries</strong> have the highest reported share in both groups. Performing arts is <strong>21%</strong> in each. Activities can overlap.</p>
         <p id="chart-08-caption" class="chart-caption">Each share describes its culture and heritage visitor group, not all New South Wales visitors. Festivals are omitted because the day-trip figure is not publishable.</p>
-        <div class="legend cohort-key" data-chart="chart-08"><p><span class="overnight-swatch"></span>Blue, upper bar: overnight visitors</p><p><span class="daytrip-swatch"></span>Orange, lower bar: day-trip visitors</p></div>
+        <div class="legend cohort-key" data-chart="chart-08"><p><span class="overnight-swatch"></span>Upper bar: overnight visitors</p><p><span class="daytrip-swatch"></span>Lower bar: day-trip visitors</p></div>
         <p id="chart-08-status" class="chart-status" role="status">Loading New South Wales activities...</p>
         <div id="chart-08" class="vis-container" aria-busy="true"></div>
       </figure>
       <figure class="chart" aria-labelledby="chart-09-heading" aria-describedby="chart-09-caption">
         <h3 id="chart-09-heading">Most overnight visitors stayed one to three nights</h3>
         <p class="chart-subtitle">Domestic overnight culture and heritage visitors · Calendar 2024</p>
-        <p class="finding">About <strong>63%</strong> stayed <strong>one to three nights</strong>. This combines the one, two and three-night shares. Values are rounded.</p>
+        <p class="finding">The first three duration categories together account for <strong>63%</strong>. These visitors stayed <strong>one to three nights</strong>. Reported percentages are rounded.</p>
         <p id="chart-09-caption" class="chart-caption">The ordered duration groups have unequal ranges and an open-ended last group. They do not support calculating an exact average stay.</p>
         <p id="chart-09-status" class="chart-status" role="status">Loading overnight stay shares...</p>
         <div id="chart-09" class="vis-container" aria-busy="true"></div>
@@ -227,8 +224,8 @@
         <h3 id="chart-10-heading">Quarterly visitor shares were fairly even</h3>
         <p class="chart-subtitle">Quarterly shares within each annual domestic culture and heritage visitor group · New South Wales, 2024</p>
         <p class="finding">Quarterly shares are fairly even. Overnight shares range from 24% to 28%, a <strong>4 percentage-point spread</strong>. Day-trip shares range from 24% to 26%, just <strong>2 points</strong>.</p>
-        <p id="chart-10-caption" class="chart-caption">Each share uses its own group's annual visitor estimate, not all tourists in that quarter. One year does not establish a repeating seasonal pattern.</p>
-        <div class="legend cohort-key" data-chart="chart-10"><p><span class="overnight-swatch"></span>Blue, left column: overnight visitors</p><p><span class="daytrip-swatch"></span>Orange, right column: day-trip visitors</p></div>
+        <p id="chart-10-caption" class="chart-caption">Each percentage compares a quarter with its group's annual total. The groups cover culture and heritage tourism, excluding other tourists. One calendar year cannot demonstrate recurring seasonality.</p>
+        <div class="legend cohort-key" data-chart="chart-10"><p><span class="overnight-swatch"></span>Left column: overnight visitors</p><p><span class="daytrip-swatch"></span>Right column: day-trip visitors</p></div>
         <p id="chart-10-status" class="chart-status" role="status">Loading quarterly visitor shares...</p>
         <div id="chart-10" class="vis-container" aria-busy="true"></div>
       </figure>
@@ -239,12 +236,12 @@
     </div>
     <footer class="metadata" aria-labelledby="sources-heading">
       <h2 id="sources-heading">Sources and methods</h2>
-      <p>Author: Vincent Yoong<br>Webpage revised: 7 October 2026<br>Heritage data snapshot: 4 October 2026</p>
-      <p>Each point is derived from the largest component of its source geometry. Three source locations are generalised. Locations do not establish public access. There are 120 unique places and 124 state memberships because three places cross state boundaries.</p>
-      <p>The source contains 126 distinct listed places across all regions. Six places coded EXT are excluded to match the eight states and territories shown, leaving 120 distinct places. Repeated feature rows are grouped by PLACE_ID. All register counts and shares use this selected scope.</p>
-      <p>Sources were retrieved on 4 October 2026. National tourism tables cover financial years through July 2023 to June 2024. State overnight figures average July 2021 to June 2024. New South Wales observations cover calendar 2024 and were published in May 2025. These periods and populations are not interchangeable.</p>
-      <p>Tourism counts and percentages are reported rounded survey estimates. Register counts are counts of listed records. Four unresolved regional participation rates are excluded. Two source rounded-total discrepancies are retained rather than adjusted. Missing historical activities and the suppressed New South Wales festival share remain missing.</p>
-      <p>Activity questions expanded from 2022. The exact rollout month is not reported. The timeline therefore breaks before July 2021 to June 2022, the first financial year containing 2022. Both observations on either side of the break remain visible.</p>
+      <p>Author: Vincent Yoong<br>Webpage revised: 16 October 2026<br>Heritage data snapshot: 4 October 2026</p>
+      <p>Locations use interior points from each place's largest geographic component. Three source locations are generalised. Points do not establish public access. Three places cross state boundaries, creating 124 state memberships across 120 distinct places.</p>
+      <p>The register contains 126 distinct listed places across all regions. Excluding six external-territory places leaves 120 within eight states and territories. Repeated geographic records are grouped by PLACE_ID. All register counts and percentages use this selected scope.</p>
+      <p>Sources retrieved: 4 October 2026.<br>National tourism: financial years ending June 2024.<br>State overnight averages: July 2021 to June 2024.<br>New South Wales: calendar 2024, published May 2025.<br>These periods and populations are not interchangeable.</p>
+      <p>Tourism figures are rounded survey estimates. Register figures count listed records. Four inconsistent published regional rates are excluded. Two national rounded-total discrepancies remain unchanged. Suppressed festival data and unpublished historical activities remain missing.</p>
+      <p>Activity questions expanded from 2022, with no rollout month reported.<br>The timeline breaks before July 2021 to June 2022.<br>This is the first financial year containing 2022.<br>Both neighbouring observations remain visible.</p>
       <div class="source-entry">
         <h3>National Heritage List, DCCEEW</h3>
         <a href="https://data.gov.au/data/dataset/6e3366ab-48db-4495-a457-7fb67154edc6">https://data.gov.au/data/dataset/6e3366ab-48db-4495-a457-7fb67154edc6</a>
@@ -256,14 +253,14 @@
         <h3>First Nations tourism, Tourism Research Australia</h3>
         <a href="https://www.tra.gov.au/en/research-reports/first-nations-tourism">https://www.tra.gov.au/en/research-reports/first-nations-tourism</a>
         <a href="https://www.tra.gov.au/content/dam/austrade-assets/global/wip/tra/documents/tra-first-nations-tourism-october-2024.pdf">https://www.tra.gov.au/content/dam/austrade-assets/global/wip/tra/documents/tra-first-nations-tourism-october-2024.pdf</a>
-        <p>Data: International Visitor Survey and National Visitor Survey. Numerical statistics are redrawn here. Creative Commons Attribution 4.0 applies subject to Austrade exceptions. No report photos, artwork or branding are copied.</p>
+        <p>Data: Tourism Research Australia's International and National Visitor Surveys. Numerical statistics are redrawn. Creative Commons Attribution 4.0 applies, subject to Austrade exceptions. Report photos, artwork and branding are not reproduced.</p>
         <a href="https://www.austrade.gov.au/en/site-information/site-disclaimer">https://www.austrade.gov.au/en/site-information/site-disclaimer</a>
       </div>
       <div class="source-entry">
         <h3>Culture and heritage tourism, Destination NSW</h3>
         <a href="https://www.destinationnsw.com.au/insights/nsw-statistics/market-segments-nsw-statistics">https://www.destinationnsw.com.au/insights/nsw-statistics/market-segments-nsw-statistics</a>
         <a href="https://cdn.sanity.io/files/faycjvmy/production/93c3d0316c727a6cfdd782e0cde5c0fc0dffeb6d.pdf">https://cdn.sanity.io/files/faycjvmy/production/93c3d0316c727a6cfdd782e0cde5c0fc0dffeb6d.pdf</a>
-        <p>Data: Tourism Research Australia, National Visitor Survey. Attributed numerical statistics are shown in original charts. An open licence for the entire PDF has not been confirmed. The report and its visual assets are not redistributed.</p>
+        <p>Data: Tourism Research Australia's National Visitor Survey. Attributed statistics are redrawn in original charts. The PDF's full redistribution licence remains unconfirmed. Its graphics and report are not redistributed.</p>
       </div>
       <div class="source-entry">
         <h3>State boundaries and anchors, Australian Bureau of Statistics</h3>
@@ -276,8 +273,9 @@
       </div>
       <div class="source-entry">
         <h3>Code and typography</h3>
-        <p>Map scaffolding adapted from the FIT3179 teaching examples. Source Serif 4 and Source Sans 3 are used under the SIL Open Font Licence. Their licence notices are retained with the local font files.</p>
+        <p>Map scaffolding: FIT3179 teaching examples.<br>Parallel coordinates: official Vega-Lite example, using original percentage scales.<br>Typefaces: Source Serif 4 and Source Sans 3.<br>Licence: SIL Open Font Licence, supplied with local font files.</p>
         <a href="https://github.com/FIT3179/Vega-Lite">https://github.com/FIT3179/Vega-Lite</a>
+        <a href="https://vega.github.io/vega-lite/examples/parallel_coordinate.html">https://vega.github.io/vega-lite/examples/parallel_coordinate.html</a>
         <a href="https://github.com/adobe-fonts/source-serif">https://github.com/adobe-fonts/source-serif</a>
         <a href="https://github.com/adobe-fonts/source-sans">https://github.com/adobe-fonts/source-sans</a>
         <a href="./fonts/LICENSE-source-serif.md">./fonts/LICENSE-source-serif.md</a>

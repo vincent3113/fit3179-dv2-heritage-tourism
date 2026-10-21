@@ -1,0 +1,23 @@
+{
+  "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+  "description":"Quarterly shares of annual NSW culture and heritage visitor estimates, separate domestic overnight and day-trip groups, calendar 2024.",
+  "width":"container","height":360,"autosize":{"type":"fit","contains":"padding"},"padding":{"left":8,"right":8,"top":16,"bottom":8},
+  "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/nsw-quarterly-visitation.json"},
+  "transform":[
+    {"calculate":"datum.quarter == 1 ? 'January|to March' : datum.quarter == 2 ? 'April|to June' : datum.quarter == 3 ? 'July|to September' : 'October|to December'","as":"quarter_display"},
+    {"calculate":"format(datum.visitor_share_pct_reported,'.0f') + '%'","as":"share_label"},
+    {"calculate":"datum.cohort == 'domestic_overnight' ? 'Overnight' : 'Day trips'","as":"cohort_display"}
+  ],
+  "encoding":{
+    "x":{"field":"quarter_display","type":"ordinal","sort":["January|to March","April|to June","July|to September","October|to December"],"axis":{"title":null,"labelExpr":"split(datum.label,'|')","labelAngle":0,"labelLineHeight":20,"labelLimit":160,"labelPadding":10}},
+    "xOffset":{"field":"cohort","type":"nominal","sort":["domestic_overnight","domestic_daytrip"]},
+    "y":{"field":"visitor_share_pct_reported","type":"quantitative","scale":{"domain":[0,30],"zero":true},"axis":{"title":"Share of annual visitor group","values":[0,10,20,30],"labelExpr":"datum.label + '%'"}},
+    "tooltip":[{"field":"category","title":"Source period"},{"field":"cohort_display","title":"Domestic culture and heritage visitors"},{"field":"share_label","title":"Share of this annual group"}]
+  },
+  "layer":[
+    {"mark":{"type":"bar"},"encoding":{"color":{"field":"cohort","type":"nominal","scale":{"domain":["domestic_overnight","domestic_daytrip"],"range":["#245b9e","#c22b36"]},"legend":null}}},
+    {"mark":{"type":"text","dy":-10,"fontSize":14,"color":"#20303d"},"encoding":{"text":{"field":"share_label"}}},
+    {"transform":[{"filter":"datum.quarter == 4 && datum.cohort == 'domestic_overnight'"}],"mark":{"type":"text","fontSize":14,"lineHeight":20,"color":"white"},"encoding":{"y":{"datum":14},"text":{"value":["4 points","above the","first three","quarters"]},"tooltip":null}}
+  ],
+  "config":{"font":"Source Sans 3","view":{"stroke":null},"axis":{"labelFontSize":14,"titleFontSize":14,"titleFontWeight":"normal","labelColor":"#20303d","titleColor":"#20303d","gridColor":"#e7edf1","domain":false,"ticks":false}}
+}

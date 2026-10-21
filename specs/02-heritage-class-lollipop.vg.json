@@ -12,7 +12,7 @@
   },
   "layer":[
     {"mark":{"type":"rule","strokeWidth":2,"color":"#8b9ba7"},"encoding":{"x2":{"datum":0}}},
-    {"mark":{"type":"point","filled":true,"size":100,"color":"#1d5f99","opacity":1}},
+    {"mark":{"type":"point","filled":true,"size":100,"opacity":1},"encoding":{"color":{"condition":{"test":"datum.heritage_class == 'Historic'","value":"#4d3599"},"value":"#818c94"}}},
     {"mark":{"type":"text","align":"left","dx":12,"color":"#20303d","fontSize":14},"encoding":{"text":{"field":"class_count","format":","}}},
     {"transform":[{"filter":"datum.heritage_class == 'Historic'"}],"mark":{"type":"text","align":"left","dy":-23,"fontSize":14,"fontWeight":600,"color":"#20303d"},"encoding":{"x":{"datum":12},"text":{"field":"share_note"},"tooltip":null}}
   ],

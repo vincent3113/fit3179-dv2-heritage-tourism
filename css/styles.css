@@ -34,8 +34,19 @@
   --paper: #ffffff;
   --ink: #20303d;
   --secondary: #52616d;
-  --blue: #1d5f99;
-  --orange: #b65a17;
+  --blue: #254f69;
+  --overnight: #245b9e;
+  --daytrip: #c22b36;
+  --international: #9a4787;
+  --participation: #008c95;
+  --activity-art: #ad6000;
+  --activity-site: #24764c;
+  --activity-performance: #232529;
+  --domestic: #4e5d6c;
+  --historic: #4d3599;
+  --heritage-other: #a58b00;
+  --data-context: #818c94;
+  --place-dot: #52616d;
   --rule: #d7dfe5;
   --selection: #d9e9f5;
   --prose-width: 60ch;
@@ -227,7 +238,7 @@ figcaption,
   margin-top: 16px;
 }
 .legend-title { margin-bottom: 12px; }
-.legend-items, .period-key, .cohort-key {
+.legend-items, .cohort-key {
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -235,26 +246,24 @@ figcaption,
   gap: 8px 24px;
 }
 .legend-items p { display: flex; align-items: center; gap: 8px; }
-.period-key,
 .cohort-key { font-size: 16px; line-height: 24px; margin-top: 16px; }
-.period-key p,
 .cohort-key p { display: flex; gap: 8px; align-items: center; }
-.hollow-point, .filled-point { width: 11px; height: 11px; border: 2px solid var(--blue); border-radius: 50%; flex: none; }
-.filled-point { background: var(--blue); }
 
-.overnight-swatch, .daytrip-swatch, .other-trip-swatch { width: 24px; height: 12px; flex: none; }
-.overnight-swatch { background: var(--blue); }
-.daytrip-swatch { background: var(--orange); }
+.overnight-swatch, .daytrip-swatch, .participation-swatch, .other-trip-swatch, .historic-swatch, .other-class-swatch { width: 24px; height: 12px; flex: none; }
+.overnight-swatch { background: var(--overnight); }
+.daytrip-swatch { background: var(--daytrip); }
+.participation-swatch { background: var(--participation); }
+.historic-swatch { background: var(--historic); }
+.other-class-swatch { background: var(--heritage-other); }
 .other-trip-swatch { background: #e7edf1; border: 1px solid #8b9ba7; }
-.size-circle { flex: none; border-radius: 50%; background: rgb(29 95 153 / 55%); }
+.size-circle { flex: none; border-radius: 50%; background: rgb(36 91 158 / 55%); }
 .size-key .legend-items { min-height: 55px; }
-.scale-key .colour-strip {
-  width: 250px;
-  height: 12px;
-  background: linear-gradient(to right, #eff3ff, #b4c7db 50%, #05204b);
-  margin: 12px 0 8px;
-}
-.scale-ticks { display: flex; justify-content: space-between; width: 250px; }
+.profile-line { width: 24px; height: 0; border-top: 3px solid var(--domestic); flex: none; }
+.profile-line.international { border-color: var(--international); border-top-style: dashed; }
+.activity-line { width: 24px; height: 0; border-top: 3px solid; flex: none; }
+.activity-art { border-color: var(--activity-art); }
+.activity-site { border-color: var(--activity-site); border-top-style: dashed; }
+.activity-performance { border-color: var(--activity-performance); border-top-style: dotted; }
 
 .finding {
   max-width: var(--prose-width);
@@ -271,12 +280,14 @@ figcaption,
   color: var(--secondary);
 }
 
-.class-key {
+.share-key {
   font-size: 16px;
   line-height: 24px;
+  width: min(300px, 100%);
 }
 
-.class-key .legend-items span { width: 24px; height: 18px; border: 1px solid var(--rule); flex: none; }
+.scale-ramp { height: 12px; background: linear-gradient(90deg in lab, #eff3f6, #254f69); }
+.scale-ticks { display: flex; justify-content: space-between; margin-top: 8px; }
 
 .classification-control {
   min-width: 0;
@@ -330,7 +341,7 @@ figcaption,
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--blue);
+  background: var(--place-dot);
   flex: none;
 }
 
@@ -474,15 +485,45 @@ figcaption {
 .metadata > p + p { margin-top: 0; }
 .metadata > h2 { margin-bottom: 0; }
 
-#vg-tooltip-element {
+#vg-tooltip-element.vg-tooltip {
   font-family: "Source Sans 3", "Segoe UI", sans-serif;
   font-size: 16px;
-  max-width: 380px;
+  line-height: 1.4;
+  min-width: min(320px, calc(100vw - 24px));
+  max-width: min(420px, calc(100vw - 24px));
+  padding: 12px 16px;
+  background: var(--paper);
 }
 
-#vg-tooltip-element td {
+#vg-tooltip-element.vg-tooltip table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+#vg-tooltip-element.vg-tooltip table tr td.key,
+#vg-tooltip-element.vg-tooltip table tr td.value {
+  display: table-cell;
+  padding: 4px 0;
+  max-height: none;
+  overflow: visible;
+  text-align: left;
+  vertical-align: top;
   white-space: normal;
   overflow-wrap: anywhere;
+}
+
+#vg-tooltip-element.vg-tooltip table tr td.key {
+  width: 46%;
+  max-width: none;
+  padding-right: 16px;
+  color: var(--secondary);
+}
+
+#vg-tooltip-element.vg-tooltip table tr td.value {
+  max-width: none;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
 }
 
 .sr-only {

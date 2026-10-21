@@ -8,16 +8,16 @@ const charts = [
     dataFiles: ["australia-states.topojson", "heritage-place-points.csv", "state-label-points.csv"]
   },
   {id:"chart-02", specUrl:"./specs/02-heritage-class-lollipop.vg.json", dataFiles:["heritage-place-points.json"]},
-  {id:"chart-12", specUrl:"./specs/12-heritage-state-comparison.vg.json", dataFiles:["heritage-state-class.json"]},
-  {id:"chart-03", specUrl:"./specs/03-heritage-class-choropleth.vg.json", dataFiles:["heritage-state-class.csv","australia-states.topojson","state-label-points.csv"]},
-  {id:"chart-04", specUrl:"./specs/04-first-nations-state-symbols.vg.json", dataFiles:["australia-states.topojson","first-nations-state-counts.csv"]},
-  {id:"chart-05", specUrl:"./specs/05-international-participation-waffle.vg.json", dataFiles:["first-nations-international-participation.json"]},
-  {id:"chart-11", specUrl:"./specs/11-first-nations-activity-matrix.vg.json", dataFiles:["first-nations-activities.json"]},
-  {id:"chart-06", specUrl:"./specs/06-international-activity-connected-dots.vg.json", dataFiles:["first-nations-activities.json"]},
-  {id:"chart-07", specUrl:"./specs/07-domestic-first-nations-timeline.vg.json", dataFiles:["first-nations-annual.json"]},
-  {id:"chart-08", specUrl:"./specs/08-nsw-activity-grouped-bars.vg.json", dataFiles:["nsw-activities.json"]},
-  {id:"chart-09", specUrl:"./specs/09-nsw-stay-length-bars.vg.json", dataFiles:["nsw-overnight-trip-length.json"]},
-  {id:"chart-10", specUrl:"./specs/10-nsw-quarterly-grouped-columns.vg.json", dataFiles:["nsw-quarterly-visitation.json"]}
+  {id:"chart-12", specUrl:"./specs/03-heritage-state-comparison.vg.json", dataFiles:["heritage-state-class.json"]},
+  {id:"chart-03", specUrl:"./specs/04-heritage-class-choropleth.vg.json", dataFiles:["heritage-state-class.csv","australia-states.topojson","state-label-points.csv"]},
+  {id:"chart-04", specUrl:"./specs/05-first-nations-state-symbols.vg.json", dataFiles:["australia-states.topojson","first-nations-state-counts.csv"]},
+  {id:"chart-05", specUrl:"./specs/06-international-participation-waffle.vg.json", dataFiles:["first-nations-international-participation.json"]},
+  {id:"chart-11", specUrl:"./specs/07-first-nations-activity-parallel-coordinates.vg.json", dataFiles:["first-nations-activities.json"]},
+  {id:"chart-06", specUrl:"./specs/08-international-activity-slopegraph.vg.json", dataFiles:["first-nations-activities.json"]},
+  {id:"chart-07", specUrl:"./specs/09-domestic-first-nations-timeline.vg.json", dataFiles:["first-nations-annual.json"]},
+  {id:"chart-08", specUrl:"./specs/10-nsw-activity-grouped-bars.vg.json", dataFiles:["nsw-activities.json"]},
+  {id:"chart-09", specUrl:"./specs/11-nsw-stay-length-bars.vg.json", dataFiles:["nsw-overnight-trip-length.json"]},
+  {id:"chart-10", specUrl:"./specs/12-nsw-quarterly-grouped-columns.vg.json", dataFiles:["nsw-quarterly-visitation.json"]}
 ];
 
 const dataCache = new Map();
@@ -216,26 +216,6 @@ function validateStateRows(rows) {
   }
 }
 
-// Composition needs real component widths, not CSS scaling of small labels.
-function fitStateComparisonLayout(spec, availableWidth) {
-  const adjusted = JSON.parse(JSON.stringify(spec));
-  const parts = adjusted.hconcat;
-  const labelSpace = availableWidth < 520 ? 162 : 220;
-  if (availableWidth < 760) {
-    delete adjusted.hconcat;
-    adjusted.vconcat = parts;
-    parts.forEach(part => { part.width = Math.max(120,availableWidth - labelSpace - 42); });
-    parts[1].encoding.y.axis = {title:null,labelLimit:220,minExtent:145,
-      labelExpr:"datum.label == 'Australian Capital Territory' ? ['Australian Capital','Territory'] : datum.label"};
-    parts[0].encoding.y.axis = {...parts[1].encoding.y.axis};
-  } else {
-    const usable = availableWidth - labelSpace - 78;
-    parts[0].width = Math.floor(usable * 0.47);
-    parts[1].width = Math.floor(usable * 0.53);
-  }
-  return adjusted;
-}
-
 function setSummary(id, before, value, after) {
   const emphasis = document.createElement("strong");
   emphasis.textContent = value;
@@ -307,14 +287,10 @@ async function embedChart(entry) {
     // Revalidate specifications so a revised page cannot keep an older chart layout.
     const response = await fetch(new URL(entry.specUrl,pageBase), {cache:"no-cache"});
     if (!response.ok) throw new Error("Unable to load the chart specification: " + response.status);
-    let specification = await response.json();
+    const specification = await response.json();
     // Apply the shared reading size after source config, which overrides embed defaults.
     specification.config = {...specification.config,
       axis: {...specification.config?.axis, labelFontSize: 16, titleFontSize: 16}};
-    if (entry.id === "chart-12") {
-      specification = fitStateComparisonLayout(specification,container.getBoundingClientRect().width);
-      if (chartResults.has(entry.id)) chartResults.get(entry.id).finalize();
-    }
     const result = await vegaEmbed(container, specification, {
       actions: true,
       renderer: "svg",
@@ -357,22 +333,6 @@ async function embedChart(entry) {
   }
 }
 
-// A slow redraw must finish before another can replace the same Vega view.
-// Requests during that work coalesce into one redraw at the latest container width.
-let stateComparisonRenderPromise = null;
-let stateComparisonNeedsRender = false;
-function queueStateComparisonRedraw() {
-  stateComparisonNeedsRender = true;
-  if (stateComparisonRenderPromise) return stateComparisonRenderPromise;
-  stateComparisonRenderPromise = (async () => {
-    while (stateComparisonNeedsRender) {
-      stateComparisonNeedsRender = false;
-      await embedChart(charts.find(chart => chart.id === "chart-12"));
-    }
-  })().finally(() => { stateComparisonRenderPromise = null; });
-  return stateComparisonRenderPromise;
-}
-
 async function populatePlaceList() {
   const status = document.getElementById("place-list-status");
   try {
@@ -409,16 +369,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Chart labels should measure the real local font, not a temporary fallback.
   if (document.fonts) await document.fonts.ready;
   await Promise.all([populatePlaceList(), ...charts.map(embedChart)]);
-  const stateComparison = document.getElementById("chart-12");
-  if (stateComparison && typeof ResizeObserver !== "undefined") {
-    let lastWidth = Math.round(stateComparison.getBoundingClientRect().width);
-    let resizeTimer;
-    new ResizeObserver(entries => {
-      const width = Math.round(entries[0].contentRect.width);
-      if (width === lastWidth) return;
-      lastWidth = width;
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(queueStateComparisonRedraw,120);
-    }).observe(stateComparison);
-  }
 });
