@@ -8,16 +8,16 @@ const charts = [
     dataFiles: ["australia-states.topojson", "heritage-place-points.csv", "state-label-points.csv"]
   },
   {id:"chart-02", specUrl:"./specs/02-heritage-class-lollipop.vg.json", dataFiles:["heritage-place-points.json"]},
-  {id:"chart-12", specUrl:"./specs/03-heritage-state-comparison.vg.json", dataFiles:["heritage-state-class.json"]},
-  {id:"chart-03", specUrl:"./specs/04-heritage-class-choropleth.vg.json", dataFiles:["heritage-state-class.csv","australia-states.topojson","state-label-points.csv"]},
-  {id:"chart-04", specUrl:"./specs/05-first-nations-state-symbols.vg.json", dataFiles:["australia-states.topojson","first-nations-state-counts.csv"]},
-  {id:"chart-05", specUrl:"./specs/06-international-participation-waffle.vg.json", dataFiles:["first-nations-international-participation.json"]},
-  {id:"chart-11", specUrl:"./specs/07-first-nations-activity-parallel-coordinates.vg.json", dataFiles:["first-nations-activities.json"]},
-  {id:"chart-06", specUrl:"./specs/08-international-activity-slopegraph.vg.json", dataFiles:["first-nations-activities.json"]},
-  {id:"chart-07", specUrl:"./specs/09-domestic-first-nations-timeline.vg.json", dataFiles:["first-nations-annual.json"]},
-  {id:"chart-08", specUrl:"./specs/10-nsw-activity-grouped-bars.vg.json", dataFiles:["nsw-activities.json"]},
-  {id:"chart-09", specUrl:"./specs/11-nsw-stay-length-bars.vg.json", dataFiles:["nsw-overnight-trip-length.json"]},
-  {id:"chart-10", specUrl:"./specs/12-nsw-quarterly-grouped-columns.vg.json", dataFiles:["nsw-quarterly-visitation.json"]}
+  {id:"chart-03", specUrl:"./specs/03-heritage-state-comparison.vg.json", dataFiles:["heritage-state-class.json"]},
+  {id:"chart-04", specUrl:"./specs/04-heritage-class-choropleth.vg.json", dataFiles:["heritage-state-class.csv","australia-states.topojson","state-label-points.csv"]},
+  {id:"chart-05", specUrl:"./specs/05-first-nations-state-symbols.vg.json", dataFiles:["australia-states.topojson","first-nations-state-counts.csv"]},
+  {id:"chart-06", specUrl:"./specs/06-international-participation-waffle.vg.json", dataFiles:["first-nations-international-participation.json"]},
+  {id:"chart-07", specUrl:"./specs/07-first-nations-activity-connected-dots.vg.json", dataFiles:["first-nations-activities.json"]},
+  {id:"chart-08", specUrl:"./specs/08-international-activity-slopegraph.vg.json", dataFiles:["first-nations-activities.json"]},
+  {id:"chart-09", specUrl:"./specs/09-domestic-first-nations-timeline.vg.json", dataFiles:["first-nations-annual.json"]},
+  {id:"chart-10", specUrl:"./specs/10-nsw-activity-grouped-bars.vg.json", dataFiles:["nsw-activities.json"]},
+  {id:"chart-11", specUrl:"./specs/11-nsw-stay-length-bars.vg.json", dataFiles:["nsw-overnight-trip-length.json"]},
+  {id:"chart-12", specUrl:"./specs/12-nsw-quarterly-grouped-columns.vg.json", dataFiles:["nsw-quarterly-visitation.json"]}
 ];
 
 const dataCache = new Map();
@@ -226,9 +226,9 @@ function updateClassificationSummary(selection, rows) {
   const key = selection.toLowerCase();
   const highest = [...rows].sort((a,b)=>b[key+"_share_pct"]-a[key+"_share_pct"])[0];
   const comparison = rows.find(r=>r.state_code === {Historic:"VIC",Indigenous:"NSW",Natural:"WA"}[selection]);
-  document.getElementById("chart-03-subtitle").textContent = selection +
+  document.getElementById("chart-04-subtitle").textContent = selection +
     "-classified places as a share of each state's listed places · Snapshot 4 October 2026";
-  setSummary("chart-03-summary", selection + " share: " + highest.state_name + " leads at ",
+  setSummary("chart-04-summary", selection + " share: " + highest.state_name + " leads at ",
     highest[key+"_share_pct"].toFixed(1) + "%",
     " (" + highest[key+"_places"] + " of " + highest.listed_places + "). " +
     comparison.state_name + " has " + comparison[key+"_share_pct"].toFixed(1) + "% (" +
@@ -237,7 +237,7 @@ function updateClassificationSummary(selection, rows) {
 
 function updateLatestYearSummary(rows) {
   const row = rows.reduce((latest,r)=>r.period_end_year>latest.period_end_year?r:latest);
-  setSummary("chart-07-summary", "July " +
+  setSummary("chart-09-summary", "July " +
     (row.period_end_year-1) + " to June " + row.period_end_year + ": ",
     row.domestic_fn_trips_reported.toLocaleString("en-AU"),
     " reported domestic day and overnight trips involving First Nations activities.");
@@ -304,15 +304,15 @@ async function embedChart(entry) {
       }
     });
     chartResults.set(entry.id, result);
-    if (entry.id === "chart-03") {
+    if (entry.id === "chart-04") {
       // Reuse Vega's native radio inputs before the key, preserving their binding.
-      document.getElementById("chart-03-controls").append(container.querySelector(".vega-bindings"));
+      document.getElementById("chart-04-controls").append(container.querySelector(".vega-bindings"));
       const rows = await loadData("heritage-state-class.csv");
       const update = (_,selection) => updateClassificationSummary(selection,rows);
       result.view.addSignalListener("heritageClass",update);
       update(null,result.view.signal("heritageClass"));
     }
-    if (entry.id === "chart-07") {
+    if (entry.id === "chart-09") {
       const rows = await loadData("first-nations-annual.json");
       updateLatestYearSummary(rows);
       populateAnnualTripList(rows);

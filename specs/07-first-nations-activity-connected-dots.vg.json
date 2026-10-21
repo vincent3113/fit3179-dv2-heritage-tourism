@@ -1,0 +1,264 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Connected dot plot comparing two separate First Nations trip groups within each of seven activities. Point position shows each source-reported percentage. A horizontal connector shows the between-group gap, not movement, change over time or a part-to-whole relationship. Activities overlap.",
+  "width": "container",
+  "height": 600,
+  "autosize": {
+    "type": "fit",
+    "contains": "padding"
+  },
+  "padding": {
+    "left": 8,
+    "right": 30,
+    "top": 66,
+    "bottom": 12
+  },
+  "data": {
+    "url": "https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/first-nations-activities.json"
+  },
+  "transform": [
+    {
+      "calculate": "datum.activity_id == 'site_community' ? 'Site or community visits' : datum.activity_id == 'art_craft_cultural_displays' ? 'Art, craft and|cultural displays' : datum.activity_id == 'traditional_activities' ? 'Traditional activities' : datum.activity_id == 'guided_tour' ? 'Guided tours' : datum.activity_id == 'performance' ? 'Performances' : datum.activity_id == 'food_experience' ? 'Food experiences' : 'Camping'",
+      "as": "activity_display"
+    },
+    {
+      "joinaggregate": [
+        {
+          "op": "min",
+          "field": "share_of_fn_trips_2023_24_pct_reported",
+          "as": "lower_share"
+        },
+        {
+          "op": "max",
+          "field": "share_of_fn_trips_2023_24_pct_reported",
+          "as": "upper_share"
+        }
+      ],
+      "groupby": [
+        "activity_id"
+      ]
+    },
+    {
+      "calculate": "datum.upper_share - datum.lower_share",
+      "as": "gap_size"
+    },
+    {
+      "calculate": "datum.cohort == 'international' ? 'International' : 'Domestic day and overnight'",
+      "as": "cohort_display"
+    },
+    {
+      "calculate": "format(datum.share_of_fn_trips_2023_24_pct_reported,'.0f') + '%'",
+      "as": "share_label"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "share_of_fn_trips_2023_24_pct_reported",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          0,
+          80
+        ],
+        "nice": false,
+        "zero": true
+      },
+      "axis": {
+        "title": "Share of each First Nations trip group",
+        "values": [
+          0,
+          20,
+          40,
+          60,
+          80
+        ],
+        "labelExpr": "datum.value + '%'",
+        "grid": true,
+        "gridColor": "#e7edf1",
+        "domain": false,
+        "ticks": false
+      }
+    },
+    "y": {
+      "field": "activity_display",
+      "type": "nominal",
+      "sort": {
+        "field": "gap_size",
+        "op": "max",
+        "order": "descending"
+      },
+      "scale": {
+        "padding": 0.35
+      },
+      "axis": {
+        "title": null,
+        "labelExpr": "split(datum.label,'|')",
+        "labelLimit": 220,
+        "minExtent": 210,
+        "labelPadding": 14,
+        "labelLineHeight": 21,
+        "domain": false,
+        "ticks": false
+      }
+    },
+    "color": {
+      "field": "cohort",
+      "type": "nominal",
+      "scale": {
+        "domain": [
+          "domestic_day_and_overnight",
+          "international"
+        ],
+        "range": [
+          "#4e5d6c",
+          "#9a4787"
+        ]
+      },
+      "legend": null
+    },
+    "tooltip": [
+      {
+        "field": "activity_label_source",
+        "title": "Source activity wording"
+      },
+      {
+        "field": "cohort_display",
+        "title": "Trip group"
+      },
+      {
+        "field": "share_label",
+        "title": "Share of this First Nations trip group"
+      },
+      {
+        "field": "trips_2023_24_reported",
+        "title": "Reported activity trips",
+        "format": ","
+      }
+    ]
+  },
+  "layer": [
+    {
+      "name": "activity_gaps",
+      "transform": [
+        {
+          "filter": "datum.cohort == 'domestic_day_and_overnight'"
+        }
+      ],
+      "mark": {
+        "type": "rule",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "x": {
+          "field": "lower_share",
+          "type": "quantitative"
+        },
+        "x2": {
+          "field": "upper_share"
+        },
+        "y2": {
+          "field": "activity_display"
+        },
+        "color": {
+          "value": "#b6c3cc"
+        },
+        "tooltip": null
+      }
+    },
+    {
+      "name": "cohort_points",
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "size": 120,
+        "opacity": 1,
+        "stroke": "#ffffff",
+        "strokeWidth": 1.5
+      },
+      "encoding": {
+        "shape": {
+          "field": "cohort",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "domestic_day_and_overnight",
+              "international"
+            ],
+            "range": [
+              "circle",
+              "diamond"
+            ]
+          },
+          "legend": null
+        }
+      }
+    },
+    {
+      "name": "percentage_labels",
+      "mark": {
+        "type": "text",
+        "fontSize": 16,
+        "align": "center",
+        "baseline": "middle",
+        "dy": {
+          "expr": "datum.cohort == 'domestic_day_and_overnight' ? -16 : 18"
+        },
+        "stroke": "white",
+        "strokeWidth": 3
+      },
+      "encoding": {
+        "text": {
+          "field": "share_label"
+        }
+      }
+    },
+    {
+      "name": "gap_annotation",
+      "transform": [
+        {
+          "filter": "datum.activity_id == 'art_craft_cultural_displays' && datum.cohort == 'international'"
+        },
+        {
+          "calculate": "(datum.lower_share + datum.upper_share) / 2",
+          "as": "gap_midpoint"
+        },
+        {
+          "calculate": "format(datum.gap_size,'.0f') + ' percentage points higher|for international trips'",
+          "as": "gap_note"
+        },
+        {
+          "calculate": "split(datum.gap_note,'|')",
+          "as": "gap_lines"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "baseline": "bottom",
+        "dy": -42,
+        "fontSize": 14,
+        "lineHeight": 19,
+        "fontWeight": 600
+      },
+      "encoding": {
+        "x": {
+          "field": "gap_midpoint",
+          "type": "quantitative"
+        },
+        "color": {
+          "value": "#20303d"
+        },
+        "text": {
+          "field": "gap_lines"
+        },
+        "tooltip": null
+      }
+    }
+  ],
+  "config": {
+    "font": "Source Sans 3",
+    "view": {
+      "stroke": null
+    }
+  }
+}
