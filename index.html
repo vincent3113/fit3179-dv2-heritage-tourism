@@ -9,13 +9,13 @@
   <script defer src="https://cdn.jsdelivr.net/npm/vega@5.33.0/build/vega.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/vega-lite@5.23.0/build/vega-lite.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/vega-embed@6.29.0/build/vega-embed.min.js"></script>
-  <script defer src="./js/visualisations.js?v=20261022-interview-1"></script>
+  <script defer src="./js/visualisations.js"></script>
 </head>
 <body>
   <!--
   THESIS: A source-led reading page makes listed places visible without treating them as tourism attendance.
-  OWN-WORLD: A heritage-gallery palette on white paper with dark ink, quiet boundaries and equal slate dots. Amethyst and gold identify heritage classifications. Lapis, brick red and berry identify visitor groups. Red and green never appear together in one chart. The main title stands alone. Left-aligned section and chart headings lead to two explanatory columns above wide graphics, following the user's reference layout.
-  STORY: Locate listed places, compare register composition, then read scoped tourism participation and activities before the New South Wales detail.
+  OWN-WORLD: A heritage-gallery palette on white paper with dark ink, quiet boundaries and equal slate dots. Amethyst and gold identify heritage classifications. Lapis, brick red and berry identify visitor groups. Burnt orange, forest green and graphite identify slope activities. Red and green never appear together in one chart. The main title stands alone. Left-aligned section and chart headings lead to two explanatory columns above wide graphics, following the user's reference layout.
+  STORY: Locate listed places, compare register composition, then read scoped tourism participation, activities and change before the New South Wales detail.
   FIRST VIEWPORT: A 52 to 68 px standalone title above 20 px introductory columns leads to a 44 px section heading, 32 px chart title and full-width map. Body and chart labels retain their approved reading sizes. The record list follows the map.
   FORM: User-pinned, code-led four-section reading page through Task 13. No concept seed or approved image comp.
   FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
@@ -31,7 +31,7 @@
       <nav class="story-nav" aria-label="Story sections">
         <a href="#heritage-places">Listed places</a>
         <a href="#first-nations-participation">First Nations participation</a>
-        <a href="#activities-change">Activities</a>
+        <a href="#activities-change">Activities and change</a>
         <a href="#nsw-culture">New South Wales</a>
       </nav>
     </header>
@@ -143,7 +143,7 @@
       </figure>
     </section>
     <section id="activities-change" class="story-section" aria-labelledby="activities-heading">
-      <h2 id="activities-heading">First Nations activities</h2>
+      <h2 id="activities-heading">Activities and reported change</h2>
       <div class="section-intro">
         <p>The previous percentage used all international trips. Here, activity shares use only trips involving First Nations activities.</p>
         <p>Activities can overlap within one trip. Their percentages can therefore exceed 100%. Compare participation shares within each separate trip group.</p>
@@ -160,6 +160,41 @@
         </div>
         <p id="chart-07-status" class="chart-status" role="status">Loading activity comparisons...</p>
         <div id="chart-07" class="vis-container" aria-busy="true"></div>
+      </figure>
+      <figure class="chart" aria-labelledby="chart-08-heading" aria-describedby="chart-08-caption">
+        <h3 id="chart-08-heading">Only one of these three reported activity counts increased</h3>
+        <p class="chart-subtitle">International activity trip estimates · July 2018 to June 2019 compared with July 2023 to June 2024</p>
+        <p class="finding">Art, craft and cultural displays: <strong>+125,000</strong> reported trips<br>Site or community visits: <strong>167,000 fewer</strong><br>Performances: <strong>123,000 fewer</strong></p>
+        <p id="chart-08-caption" class="chart-caption">Earlier estimates appear left, later estimates right. Colours and line patterns identify activities. Labels show each change. Four questions were added from 2022. These three activities have international counts for both periods. Connectors do not describe intervening years or demand alone.</p>
+        <div class="legend slope-key" data-chart="chart-08" aria-label="Activity colours and line patterns">
+          <p class="legend-title">Activity</p>
+          <div class="legend-items">
+            <p data-activity="art_craft_cultural_displays"><span class="activity-line activity-art" aria-hidden="true"></span>Art, craft and cultural displays</p>
+            <p data-activity="site_community"><span class="activity-line activity-site" aria-hidden="true"></span>Site or community visits</p>
+            <p data-activity="performance"><span class="activity-line activity-performance" aria-hidden="true"></span>Performances</p>
+          </div>
+        </div>
+        <p id="chart-08-status" class="chart-status" role="status">Loading reported activity comparisons...</p>
+        <div id="chart-08" class="vis-container" aria-busy="true"></div>
+      </figure>
+      <figure class="chart" aria-labelledby="chart-09-heading" aria-describedby="chart-09-caption">
+        <h3 id="chart-09-heading">Reported trips increased, but activity questions changed</h3>
+        <p class="chart-subtitle">Domestic day and overnight trip estimates · July 2013 to June 2024</p>
+        <div class="finding">
+          <p id="chart-09-summary"></p>
+          <p class="reading-note">Hover for details, or open the annual estimates below.</p>
+        </div>
+        <p id="chart-09-caption" class="chart-caption">Questions expanded from 2022, limiting comparisons with earlier estimates. The line breaks before July 2021 to June 2022. That financial year first includes 2022.</p>
+        <p id="chart-09-status" class="chart-status" role="status">Loading annual domestic estimates...</p>
+        <div id="chart-09" class="vis-container" aria-busy="true"></div>
+        <details class="place-register annual-register">
+          <summary>Read all 11 annual trip estimates</summary>
+          <p class="register-intro">Rounded domestic day and overnight trip estimates. The survey-change caution above also applies to these figures.</p>
+          <table class="place-table" aria-label="Annual domestic First Nations trip estimates">
+            <thead><tr><th scope="col">Period (July to June)</th><th scope="col">Reported domestic trips</th></tr></thead>
+            <tbody id="annual-trip-rows"></tbody>
+          </table>
+        </details>
       </figure>
     </section>
     <section id="nsw-culture" class="story-section" aria-labelledby="nsw-heading">
@@ -206,6 +241,7 @@
       <p>The register contains 126 distinct listed places across all regions. Excluding six external-territory places leaves 120 within eight states and territories. Repeated geographic records are grouped by PLACE_ID. All register counts and percentages use this selected scope.</p>
       <p>Sources retrieved: 4 October 2026.<br>National tourism: financial years ending June 2024.<br>State overnight averages: July 2021 to June 2024.<br>New South Wales: calendar 2024, published May 2025.<br>These periods and populations are not interchangeable.</p>
       <p>Tourism figures are rounded survey estimates. Register figures count listed records. Four inconsistent published regional rates are excluded. Two national rounded-total discrepancies remain unchanged. Suppressed festival data and unpublished historical activities remain missing.</p>
+      <p>Activity questions expanded from 2022, with no rollout month reported.<br>The timeline breaks before July 2021 to June 2022.<br>This is the first financial year containing 2022.<br>Both neighbouring observations remain visible.</p>
       <div class="source-entry">
         <h3>National Heritage List, DCCEEW</h3>
         <a href="https://data.gov.au/data/dataset/6e3366ab-48db-4495-a457-7fb67154edc6">https://data.gov.au/data/dataset/6e3366ab-48db-4495-a457-7fb67154edc6</a>

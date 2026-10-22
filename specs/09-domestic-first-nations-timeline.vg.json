@@ -1,0 +1,24 @@
+{
+  "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+  "description":"Eleven reported annual domestic First Nations trip counts. No connector across the conservative survey comparability boundary.",
+  "width":"container","height":390,"autosize":{"type":"fit","contains":"padding"},"padding":16,
+  "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/first-nations-annual.json"},
+  "transform":[
+    {"calculate":"datum.period_end_year <= 2021 ? 'Earlier questions' : 'Expanded activity questions'","as":"survey_group"},
+    {"calculate":"'July ' + (datum.period_end_year-1) + ' to June ' + datum.period_end_year","as":"period_full"}
+  ],
+  "encoding":{
+    "x":{"field":"period_end_year","type":"quantitative","scale":{"domain":[2014,2024],"zero":false},"axis":{"title":"Financial year (July to June)","values":[2014,2016,2018,2020,2022,2024],"labelExpr":"format(datum.value-1,'.0f') + '/' + substring(format(datum.value,'.0f'),2)","labelAngle":0,"grid":false}},
+    "y":{"field":"domestic_fn_trips_reported","type":"quantitative","scale":{"domain":[0,2400000],"zero":true},"axis":{"title":"Reported domestic trips","values":[0,500000,1000000,1500000,2000000],"format":",.0f"}},
+    "tooltip":[{"field":"period_full","title":"Period"},{"field":"domestic_fn_trips_reported","title":"Day and overnight trips","format":",.0f"},{"field":"survey_group","title":"Activity question scope"}]
+  },
+  "layer":[
+    {"mark":{"type":"line","color":"#4e5d6c","strokeWidth":2},"encoding":{"detail":{"field":"survey_group"},"order":{"field":"period_end_year"}}},
+    {"mark":{"type":"point","filled":true,"stroke":"#4e5d6c","strokeWidth":2,"opacity":1},"encoding":{"fill":{"condition":{"test":"datum.financial_year == '2023/24'","value":"#4e5d6c"},"value":"white"},"size":{"condition":{"test":"datum.financial_year == '2023/24'","value":110},"value":60}}},
+    {"transform":[{"filter":"datum.financial_year == '2023/24'"}],"mark":{"type":"text","align":"right","dx":-10,"dy":-15,"color":"#20303d","fontSize":14,"fontWeight":600},"encoding":{"text":{"field":"domestic_fn_trips_reported","format":",.0f"}}},
+    {"transform":[{"filter":"datum.financial_year == '2023/24'"}],"mark":{"type":"text","align":"right","dx":-10,"dy":-42,"color":"#20303d","fontSize":14},"encoding":{"text":{"value":"Latest reported estimate"},"tooltip":null}},
+    {"data":{"values":[{"boundary":2021.5,"annotation_y":0,"annotation_end_y":2400000}]},"mark":{"type":"rule","color":"#52616d","strokeDash":[4,4]},"encoding":{"x":{"field":"boundary","type":"quantitative"},"y":{"field":"annotation_y","type":"quantitative"},"y2":{"field":"annotation_end_y"},"tooltip":null}},
+    {"data":{"values":[{"boundary":2021.5,"annotation_y":2350000,"note":["Activity questions","expanded from 2022"]}]},"mark":{"type":"text","align":"right","dx":-10,"dy":6,"baseline":"top","lineHeight":22,"fontSize":14,"color":"#20303d"},"encoding":{"x":{"field":"boundary","type":"quantitative"},"y":{"field":"annotation_y","type":"quantitative"},"text":{"field":"note"},"tooltip":null}}
+  ],
+  "config":{"font":"Source Sans 3","view":{"stroke":null},"axis":{"labelFontSize":14,"titleFontSize":14,"titleFontWeight":"normal","labelColor":"#20303d","titleColor":"#20303d","gridColor":"#e7edf1","domain":false,"ticks":false}}
+}
