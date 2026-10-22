@@ -9,7 +9,6 @@
       "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/first-nations-state-counts.csv","format":{"type":"csv","parse":{"longitude":"number","latitude":"number","avg_annual_fn_domestic_overnight_trips_reported":"number"}}},
       "mark":{"type":"circle","color":"#245b9e","stroke":"#245b9e","strokeWidth":1,"opacity":0.55},
       "encoding":{
-        "order":{"field":"avg_annual_fn_domestic_overnight_trips_reported","type":"quantitative","sort":"descending"},
         "longitude":{"field":"longitude","type":"quantitative"},"latitude":{"field":"latitude","type":"quantitative"},
         "size":{"field":"avg_annual_fn_domestic_overnight_trips_reported","type":"quantitative","scale":{"type":"linear","domain":[0,240000],"range":[0,3000],"zero":true},"legend":null},
         "tooltip":[{"field":"state_name","title":"State"},{"field":"avg_annual_fn_domestic_overnight_trips_reported","title":"Trips per year","format":","},{"field":"financial_year_start","title":"First year"},{"field":"financial_year_end","title":"Last year"},{"field":"position_source","title":"Anchor source"}]
