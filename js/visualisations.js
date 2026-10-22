@@ -13,8 +13,6 @@ const charts = [
   {id:"chart-05", specUrl:"./specs/05-first-nations-state-symbols.vg.json", dataFiles:["australia-states.topojson","first-nations-state-counts.csv"]},
   {id:"chart-06", specUrl:"./specs/06-international-participation-waffle.vg.json", dataFiles:["first-nations-international-participation.json"]},
   {id:"chart-07", specUrl:"./specs/07-first-nations-activity-connected-dots.vg.json", dataFiles:["first-nations-activities.json"]},
-  {id:"chart-08", specUrl:"./specs/08-international-activity-slopegraph.vg.json", dataFiles:["first-nations-activities.json"]},
-  {id:"chart-09", specUrl:"./specs/09-domestic-first-nations-timeline.vg.json", dataFiles:["first-nations-annual.json"]},
   {id:"chart-10", specUrl:"./specs/10-nsw-activity-grouped-bars.vg.json", dataFiles:["nsw-activities.json"]},
   {id:"chart-11", specUrl:"./specs/11-nsw-stay-length-bars.vg.json", dataFiles:["nsw-overnight-trip-length.json"]},
   {id:"chart-12", specUrl:"./specs/12-nsw-quarterly-grouped-columns.vg.json", dataFiles:["nsw-quarterly-visitation.json"]}
@@ -235,24 +233,6 @@ function updateClassificationSummary(selection, rows) {
     comparison[key+"_places"] + " of " + comparison.listed_places + ").");
 }
 
-function updateLatestYearSummary(rows) {
-  const row = rows.reduce((latest,r)=>r.period_end_year>latest.period_end_year?r:latest);
-  setSummary("chart-09-summary", "July " +
-    (row.period_end_year-1) + " to June " + row.period_end_year + ": ",
-    row.domestic_fn_trips_reported.toLocaleString("en-AU"),
-    " reported domestic day and overnight trips involving First Nations activities.");
-}
-
-function populateAnnualTripList(rows) {
-  const body = document.getElementById("annual-trip-rows");
-  body.replaceChildren();
-  for (const row of [...rows].sort((a,b)=>a.period_end_year-b.period_end_year)) {
-    const tr = body.insertRow();
-    tr.insertCell().textContent = "July " + (row.period_end_year-1) + " to June " + row.period_end_year;
-    tr.insertCell().textContent = row.domestic_fn_trips_reported.toLocaleString("en-AU");
-  }
-}
-
 // Share validated datasets used by the charts' checks, summaries and record tables.
 function loadData(fileName) {
   if (dataCache.has(fileName)) return dataCache.get(fileName);
@@ -311,11 +291,6 @@ async function embedChart(entry) {
       const update = (_,selection) => updateClassificationSummary(selection,rows);
       result.view.addSignalListener("heritageClass",update);
       update(null,result.view.signal("heritageClass"));
-    }
-    if (entry.id === "chart-09") {
-      const rows = await loadData("first-nations-annual.json");
-      updateLatestYearSummary(rows);
-      populateAnnualTripList(rows);
     }
     container.dataset.state = "ready";
     container.setAttribute("aria-busy", "false");
