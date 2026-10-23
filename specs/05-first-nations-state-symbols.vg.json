@@ -7,30 +7,32 @@
     {"data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/australia-states.topojson","format":{"type":"topojson","feature":"states"}},"mark":{"type":"geoshape","fill":"#e7edf1","stroke":"#8b9ba7","strokeWidth":0.8}},
     {
       "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/first-nations-state-counts.csv","format":{"type":"csv","parse":{"longitude":"number","latitude":"number","avg_annual_fn_domestic_overnight_trips_reported":"number"}}},
+      "transform":[
+        {"joinaggregate":[{"op":"max","field":"avg_annual_fn_domestic_overnight_trips_reported","as":"highest_estimate"}]},
+        {"calculate":"'July 2021 to June 2024'","as":"averaging_period"},
+        {"calculate":"datum.avg_annual_fn_domestic_overnight_trips_reported == datum.highest_estimate ? 'Highest estimate' : format(datum.highest_estimate - datum.avg_annual_fn_domestic_overnight_trips_reported,',d') + ' fewer trips per year'","as":"estimate_comparison"}
+      ],
       "mark":{"type":"circle","color":"#245b9e","stroke":"#245b9e","strokeWidth":1,"opacity":0.55},
       "encoding":{
         "longitude":{"field":"longitude","type":"quantitative"},"latitude":{"field":"latitude","type":"quantitative"},
         "size":{"field":"avg_annual_fn_domestic_overnight_trips_reported","type":"quantitative","scale":{"type":"linear","domain":[0,240000],"range":[0,3000],"zero":true},"legend":null},
-        "tooltip":[{"field":"state_name","title":"State"},{"field":"avg_annual_fn_domestic_overnight_trips_reported","title":"Trips per year","format":","},{"field":"financial_year_start","title":"First year"},{"field":"financial_year_end","title":"Last year"},{"field":"position_source","title":"Anchor source"}]
+        "tooltip":[{"field":"state_name","title":"State or territory"},{"field":"avg_annual_fn_domestic_overnight_trips_reported","title":"Average overnight trips per year","format":","},{"field":"averaging_period","title":"Averaging period"},{"field":"estimate_comparison","title":"Gap to the highest estimate"}]
       }
     },
     {
       "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/first-nations-state-counts.csv","format":{"type":"csv","parse":{"longitude":"number","latitude":"number","avg_annual_fn_domestic_overnight_trips_reported":"number"}}},
       "transform":[
         {"calculate":"datum.state_code == 'ACT' ? 156 : datum.state_code == 'NSW' ? 150 : datum.state_code == 'VIC' ? 144 : datum.state_code == 'TAS' ? 151 : datum.longitude","as":"label_lon"},
-        {"calculate":"datum.state_code == 'ACT' ? -37 : datum.state_code == 'NSW' ? -30 : datum.state_code == 'VIC' ? -39 : datum.state_code == 'TAS' ? -44 : datum.latitude","as":"label_lat"}
+        {"calculate":"datum.state_code == 'ACT' ? -37 : datum.state_code == 'NSW' ? -30 : datum.state_code == 'VIC' ? -39 : datum.state_code == 'TAS' ? -44 : datum.latitude","as":"label_lat"},
+        {"joinaggregate":[{"op":"max","field":"avg_annual_fn_domestic_overnight_trips_reported","as":"highest_estimate"}]},
+        {"calculate":"'July 2021 to June 2024'","as":"averaging_period"},
+        {"calculate":"datum.avg_annual_fn_domestic_overnight_trips_reported == datum.highest_estimate ? 'Highest estimate' : format(datum.highest_estimate - datum.avg_annual_fn_domestic_overnight_trips_reported,',d') + ' fewer trips per year'","as":"estimate_comparison"}
       ],
-      "encoding":{"tooltip":[{"field":"state_name","title":"State"},{"field":"avg_annual_fn_domestic_overnight_trips_reported","title":"Trips per year","format":","},{"field":"financial_year_start","title":"First year"},{"field":"financial_year_end","title":"Last year"},{"field":"position_source","title":"Anchor source"}]},
+      "encoding":{"tooltip":[{"field":"state_name","title":"State or territory"},{"field":"avg_annual_fn_domestic_overnight_trips_reported","title":"Average overnight trips per year","format":","},{"field":"averaging_period","title":"Averaging period"},{"field":"estimate_comparison","title":"Gap to the highest estimate"}]},
       "layer":[
         {"transform":[{"filter":"datum.longitude != datum.label_lon || datum.latitude != datum.label_lat"}],"mark":{"type":"rule","color":"#52616d","strokeWidth":1},"encoding":{"longitude":{"field":"longitude"},"latitude":{"field":"latitude"},"longitude2":{"field":"label_lon"},"latitude2":{"field":"label_lat"}}},
         {"name":"state_labels","mark":{"type":"text","fontSize":14,"fontWeight":600,"color":"#20303d","stroke":"white","strokeWidth":3,"strokeJoin":"round","dy":{"expr":"datum.longitude == datum.label_lon && datum.latitude == datum.label_lat ? -42 : 0"}},"encoding":{"longitude":{"field":"label_lon"},"latitude":{"field":"label_lat"},"text":{"field":"state_code"}}}
       ]
-    },
-    {
-      "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/first-nations-state-counts.csv","format":{"type":"csv","parse":{"longitude":"number","latitude":"number","avg_annual_fn_domestic_overnight_trips_reported":"number"}}},
-      "transform":[{"window":[{"op":"row_number","as":"rank"}],"sort":[{"field":"avg_annual_fn_domestic_overnight_trips_reported","order":"descending"}]},{"filter":"datum.rank == 1"},{"calculate":"['Largest reported annual average', datum.state_code + ': ' + format(datum.avg_annual_fn_domestic_overnight_trips_reported,',') + ' trips per year']","as":"annotation"}],
-      "mark":{"type":"text","align":"left","baseline":"top","fontSize":14,"lineHeight":22,"color":"#20303d","stroke":"white","strokeWidth":3},
-      "encoding":{"x":{"value":8},"y":{"value":8},"text":{"field":"annotation"}}
     }
   ],
   "config":{"font":"Source Sans 3","view":{"stroke":null},"legend":{"labelFontSize":14,"titleFontSize":14,"titleFontWeight":"normal","labelColor":"#20303d","titleColor":"#20303d"}}

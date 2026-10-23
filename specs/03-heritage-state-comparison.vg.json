@@ -9,23 +9,25 @@
     {"calculate":"datum.classification_field == 'historic_places' ? 'Historic' : 'Natural or Indigenous'","as":"comparison_group"},
     {"calculate":"datum.classification_field == 'historic_places' ? -datum.class_count : datum.class_count","as":"signed_count"},
     {"calculate":"datum.classification_field == 'historic_places' ? -8 : 8","as":"bar_baseline"},
-    {"calculate":"datum.bar_baseline + datum.signed_count","as":"plot_count"}
+    {"calculate":"datum.bar_baseline + datum.signed_count","as":"plot_count"},
+    {"calculate":"format(datum.class_count,',d') + ' of ' + format(datum.listed_places,',d')","as":"count_of_total"},
+    {"calculate":"format(100 * datum.class_count / datum.listed_places,'.1f') + '%'","as":"bar_share_label"},
+    {"calculate":"datum.historic_places + ' Historic, ' + datum.natural_places + ' Natural, ' + datum.indigenous_places + ' Indigenous'","as":"state_breakdown"}
   ],
   "encoding":{
     "y":{"field":"state_name","type":"nominal","sort":["New South Wales","Victoria","Western Australia","Queensland","Tasmania","South Australia","Northern Territory","Australian Capital Territory"],"axis":null},
     "x":{"field":"plot_count","type":"quantitative","stack":null,"scale":{"domain":[-38,38],"zero":true,"nice":false},"axis":{"title":"Number of listed places","values":[-38,-28,-18,-8,8,18,28,38],"labelExpr":"abs(datum.value) - 8"}},
     "color":{"field":"comparison_group","type":"nominal","scale":{"domain":["Historic","Natural or Indigenous"],"range":["#4d3599","#a58b00"]},"legend":null},
-    "tooltip":[{"field":"state_name","title":"State or territory"},{"field":"comparison_group","title":"Bar group"},{"field":"class_count","title":"Places in this group","format":",.0f"},{"field":"historic_places","title":"Historic classification","format":",.0f"},{"field":"natural_places","title":"Natural classification","format":",.0f"},{"field":"indigenous_places","title":"Indigenous classification","format":",.0f"},{"field":"listed_places","title":"Total state memberships","format":",.0f"}]
+    "tooltip":[{"field":"state_name","title":"State or territory"},{"field":"comparison_group","title":"Bar group"},{"field":"count_of_total","title":"Places in this group"},{"field":"bar_share_label","title":"Share of the state list"},{"field":"state_breakdown","title":"State classification counts"}]
   },
   "layer":[
-    {"mark":{"type":"bar","size":36},"encoding":{"x2":{"field":"bar_baseline"}}},
+    {"mark":{"type":"bar","size":36},"encoding":{"x2":{"field":"bar_baseline"},"opacity":{"condition":{"test":"indexof(['NSW','VIC'],datum.state_code) >= 0","value":1},"value":0.45}}},
     {"mark":{"type":"text","fontSize":16,"align":{"expr":"datum.classification_field == 'historic_places' ? 'right' : 'left'"},"dx":{"expr":"datum.classification_field == 'historic_places' ? -8 : 8"}},"encoding":{"text":{"field":"class_count"},"color":{"value":"#20303d"}}},
     {
+      "name":"context_annotation",
       "transform":[
         {"filter":"datum.state_code == 'VIC' && datum.classification_field == 'historic_places'"},
-        {"calculate":"'NSW'","as":"comparison_key"},
-        {"lookup":"comparison_key","from":{"data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-state-class.json"},"key":"state_code","fields":["historic_places"]},"as":["comparison_historic"]},
-        {"calculate":"split(format(datum.class_count - datum.comparison_historic,'.0f') + ' more Historic places|than New South Wales','|')","as":"comparison_note"},
+        {"calculate":"['Goldfields and rebellion','sites count as Historic']","as":"comparison_note"},
         {"calculate":"datum.bar_baseline + datum.signed_count / 2","as":"annotation_x"}
       ],
       "mark":{"type":"text","fontSize":13,"lineHeight":16,"dy":-8},

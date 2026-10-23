@@ -4,17 +4,20 @@
   "width": "container", "height": 190,
   "autosize": {"type":"fit","contains":"padding"}, "padding": {"left":8,"right":34,"top":20,"bottom":8},
   "data": {"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-place-points.json"},
-  "transform":[{"aggregate":[{"op":"distinct","field":"place_id","as":"class_count"}],"groupby":["heritage_class"]},{"joinaggregate":[{"op":"sum","field":"class_count","as":"total_places"}]},{"calculate":"format(100 * datum.class_count / datum.total_places,'.1f') + '% of the places shown'","as":"share_note"}],
+  "transform":[
+    {"aggregate":[{"op":"distinct","field":"place_id","as":"class_count"}],"groupby":["heritage_class"]},
+    {"joinaggregate":[{"op":"sum","field":"class_count","as":"snapshot_total"}]},
+    {"calculate":"format(100 * datum.class_count / datum.snapshot_total,'.1f') + '%'","as":"class_share_label"}
+  ],
   "encoding":{
     "x":{"field":"class_count","type":"quantitative","scale":{"domain":[0,70],"zero":true},"axis":{"title":"Distinct listed places","values":[0,10,20,30,40,50,60,70]}},
     "y":{"field":"heritage_class","type":"nominal","sort":["Historic","Natural","Indigenous"],"axis":{"title":null,"minExtent":84}},
-    "tooltip":[{"field":"heritage_class","title":"Register classification"},{"field":"class_count","title":"Distinct places","format":","}]
+    "tooltip":[{"field":"heritage_class","title":"Classification"},{"field":"class_count","title":"Distinct places","format":","},{"field":"class_share_label","title":"Share of this snapshot"},{"field":"snapshot_total","title":"Total places in snapshot","format":","}]
   },
   "layer":[
-    {"mark":{"type":"rule","strokeWidth":2,"color":"#8b9ba7"},"encoding":{"x2":{"datum":0}}},
+    {"mark":{"type":"rule","strokeWidth":2},"encoding":{"x2":{"datum":0},"color":{"condition":{"test":"datum.heritage_class == 'Historic'","value":"#4d3599"},"value":"#8b9ba7"}}},
     {"mark":{"type":"point","filled":true,"size":100,"opacity":1},"encoding":{"color":{"condition":{"test":"datum.heritage_class == 'Historic'","value":"#4d3599"},"value":"#818c94"}}},
-    {"mark":{"type":"text","align":"left","dx":12,"color":"#20303d","fontSize":14},"encoding":{"text":{"field":"class_count","format":","}}},
-    {"transform":[{"filter":"datum.heritage_class == 'Historic'"}],"mark":{"type":"text","align":"left","dy":-23,"fontSize":14,"fontWeight":600,"color":"#20303d"},"encoding":{"x":{"datum":12},"text":{"field":"share_note"},"tooltip":null}}
+    {"mark":{"type":"text","align":"left","dx":12,"color":"#20303d","fontSize":14},"encoding":{"text":{"field":"class_count","format":","}}}
   ],
   "config":{"font":"Source Sans 3","view":{"stroke":null},"axis":{"labelFontSize":14,"titleFontSize":14,"titleFontWeight":"normal","labelColor":"#20303d","titleColor":"#20303d","gridColor":"#e7edf1","domainColor":"#8b9ba7","tickColor":"#8b9ba7"}}
 }

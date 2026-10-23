@@ -243,6 +243,17 @@ function updateLatestYearSummary(rows) {
     " reported domestic day and overnight trips involving First Nations activities.");
 }
 
+function populateStateTripList(rows) {
+  const body = document.getElementById("state-trip-rows");
+  const field = "avg_annual_fn_domestic_overnight_trips_reported";
+  body.replaceChildren();
+  for (const row of [...rows].sort((a,b)=>b[field]-a[field] || a.state_name.localeCompare(b.state_name,"en-AU"))) {
+    const tr = body.insertRow();
+    tr.insertCell().textContent = row.state_name;
+    tr.insertCell().textContent = row[field].toLocaleString("en-AU");
+  }
+}
+
 function populateAnnualTripList(rows) {
   const body = document.getElementById("annual-trip-rows");
   body.replaceChildren();
@@ -311,6 +322,9 @@ async function embedChart(entry) {
       const update = (_,selection) => updateClassificationSummary(selection,rows);
       result.view.addSignalListener("heritageClass",update);
       update(null,result.view.signal("heritageClass"));
+    }
+    if (entry.id === "chart-05") {
+      populateStateTripList(await loadData("first-nations-state-counts.csv"));
     }
     if (entry.id === "chart-09") {
       const rows = await loadData("first-nations-annual.json");

@@ -30,13 +30,14 @@
         {"calculate":"replace(datum.full_states, 'NT', 'Northern Territory')","as":"full_states"},
         {"calculate":"replace(datum.full_states, 'ACT', 'Australian Capital Territory')","as":"full_states"},
         {"calculate":"utcFormat(toDate(datum.registration_date), '%e %B %Y')","as":"listing_date"},
-        {"calculate":"datum.approx_source_flag ? 'Source-generalised display location, not an entrance' : 'Interior display point, not an entrance'","as":"position_note"}
+        {"calculate":"datum.approx_source_flag ? 'Approximate map location, not an entrance' : 'Map point inside the place, not an entrance'","as":"position_note"},
+        {"calculate":"length(split(datum.state_codes, '|')) > 1 ? 'Counted once nationally, in ' + length(split(datum.state_codes, '|')) + ' state totals' : 'Counted once in the 120-place snapshot'","as":"count_note"}
       ],
       "mark":{"type":"circle","size":40,"color":"#52616d","opacity":0.85},
       "encoding":{
         "longitude":{"field":"longitude","type":"quantitative"},
         "latitude":{"field":"latitude","type":"quantitative"},
-        "tooltip":[{"field":"name","type":"nominal","title":"Place"},{"field":"heritage_class","type":"nominal","title":"Classification"},{"field":"full_states","type":"nominal","title":"State or territory"},{"field":"listing_date","type":"nominal","title":"Listing date"},{"field":"position_note","type":"nominal","title":"Location"}]
+        "tooltip":[{"field":"name","type":"nominal","title":"Place"},{"field":"heritage_class","type":"nominal","title":"Classification"},{"field":"full_states","type":"nominal","title":"State or territory"},{"field":"listing_date","type":"nominal","title":"Listing date"},{"field":"count_note","type":"nominal","title":"How it is counted"},{"field":"position_note","type":"nominal","title":"Map location"}]
       }
     },
     {

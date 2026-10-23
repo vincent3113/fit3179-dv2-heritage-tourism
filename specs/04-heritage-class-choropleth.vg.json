@@ -12,12 +12,15 @@
         {"calculate":"heritageClass == 'Historic' ? datum.historic_share_pct : heritageClass == 'Natural' ? datum.natural_share_pct : datum.indigenous_share_pct","as":"selected_share"},
         {"calculate":"heritageClass == 'Historic' ? datum.historic_places : heritageClass == 'Natural' ? datum.natural_places : datum.indigenous_places","as":"selected_count"},
         {"calculate":"format(datum.selected_share,'.1f') + '%'","as":"share_label"},
-        {"calculate":"heritageClass","as":"selected_class"}
+        {"calculate":"heritageClass","as":"selected_class"},
+        {"joinaggregate":[{"op":"max","field":"selected_share","as":"highest_share"}]},
+        {"calculate":"datum.selected_count + ' of ' + datum.listed_places","as":"count_of_total"},
+        {"calculate":"datum.selected_share == datum.highest_share ? 'Highest state share' : format(datum.highest_share - datum.selected_share,'.1f') + ' percentage points below the highest state share'","as":"share_comparison"}
       ],
       "mark":{"type":"geoshape","stroke":"#8b9ba7","strokeWidth":0.8},
       "encoding":{
         "color":{"field":"selected_share","type":"quantitative","scale":{"type":"linear","domain":[0,80],"range":["#eff3f6","#254f69"],"interpolate":"lab","nice":false,"zero":true},"legend":null},
-        "tooltip":[{"field":"state_name","title":"State"},{"field":"selected_class","title":"Classification"},{"field":"share_label","title":"Within-state share"},{"field":"selected_count","title":"Places in class","format":","},{"field":"listed_places","title":"State total","format":","}]
+        "tooltip":[{"field":"state_name","title":"State or territory"},{"field":"selected_class","title":"Classification"},{"field":"count_of_total","title":"Places in this class"},{"field":"share_label","title":"Share of the state list"},{"field":"share_comparison","title":"Compared with other states"}]
       }
     },
     {
@@ -29,22 +32,26 @@
         {"calculate":"datum.state_code == 'ACT' ? 156 : datum.state_code == 'NSW' ? 150 : datum.state_code == 'VIC' ? 144 : datum.state_code == 'TAS' ? 151 : datum.longitude","as":"label_lon"},
         {"calculate":"datum.state_code == 'ACT' ? -37 : datum.state_code == 'NSW' ? -30 : datum.state_code == 'VIC' ? -39 : datum.state_code == 'TAS' ? -44 : datum.latitude","as":"label_lat"},
         {"calculate":"format(datum.selected_share,'.1f') + '%'","as":"share_label"},
-        {"calculate":"heritageClass","as":"selected_class"}
+        {"calculate":"heritageClass","as":"selected_class"},
+        {"joinaggregate":[{"op":"max","field":"selected_share","as":"highest_share"}]},
+        {"calculate":"datum.selected_count + ' of ' + datum.listed_places","as":"count_of_total"},
+        {"calculate":"datum.selected_share == datum.highest_share ? 'Highest state share' : format(datum.highest_share - datum.selected_share,'.1f') + ' percentage points below the highest state share'","as":"share_comparison"}
       ],
-      "encoding":{"tooltip":[{"field":"state_name","title":"State"},{"field":"selected_class","title":"Classification"},{"field":"share_label","title":"Within-state share"},{"field":"selected_count","title":"Places in class","format":","},{"field":"listed_places","title":"State total","format":","}]},
+      "encoding":{"tooltip":[{"field":"state_name","title":"State or territory"},{"field":"selected_class","title":"Classification"},{"field":"count_of_total","title":"Places in this class"},{"field":"share_label","title":"Share of the state list"},{"field":"share_comparison","title":"Compared with other states"}]},
       "layer":[
         {"transform":[{"filter":"datum.longitude != datum.label_lon || datum.latitude != datum.label_lat"}],"mark":{"type":"rule","color":"#52616d","strokeWidth":1},"encoding":{"longitude":{"field":"longitude"},"latitude":{"field":"latitude"},"longitude2":{"field":"label_lon"},"latitude2":{"field":"label_lat"}}},
         {"name":"state_labels","mark":{"type":"text","fontSize":14,"fontWeight":600,"color":"#20303d","stroke":"white","strokeWidth":3,"strokeJoin":"round"},"encoding":{"longitude":{"field":"label_lon"},"latitude":{"field":"label_lat"},"text":{"field":"state_code"}}}
       ]
     },
     {
+      "name":"context_annotation",
       "data":{"url":"https://raw.githubusercontent.com/vincent3113/fit3179-dv2-heritage-tourism/main/data/heritage-state-class.csv","format":{"type":"csv","parse":{"listed_places":"number","historic_places":"number","indigenous_places":"number","natural_places":"number","historic_share_pct":"number","indigenous_share_pct":"number","natural_share_pct":"number"}}},
       "transform":[
         {"calculate":"heritageClass == 'Historic' ? datum.historic_share_pct : heritageClass == 'Natural' ? datum.natural_share_pct : datum.indigenous_share_pct","as":"selected_share"},
         {"calculate":"heritageClass == 'Historic' ? datum.historic_places : heritageClass == 'Natural' ? datum.natural_places : datum.indigenous_places","as":"selected_count"},
         {"window":[{"op":"row_number","as":"rank"}],"sort":[{"field":"selected_share","order":"descending"}]},
         {"filter":"datum.rank == 1"},
-        {"calculate":"['Highest ' + heritageClass + ' share', datum.state_code + ': ' + format(datum.selected_share,'.1f') + '% (' + datum.selected_count + ' of ' + datum.listed_places + ')']","as":"annotation"}
+        {"calculate":"[datum.state_code + ' leads by share', heritageClass == 'Historic' ? 'VIC has more records' : heritageClass == 'Natural' ? 'WA has more records' : 'NSW/VIC have more records']","as":"annotation"}
       ],
       "mark":{"type":"text","align":"left","baseline":"top","fontSize":14,"lineHeight":22,"color":"#20303d","stroke":"white","strokeWidth":3},
       "encoding":{"x":{"value":8},"y":{"value":8},"text":{"field":"annotation"}}
